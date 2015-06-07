@@ -55,9 +55,9 @@ class MakeLinux
                     end
                 end
             end
-            mv "lib/plug-ins/shoesfu.tmp.rb", "lib/plug-ins/shoesfu.rb"
+            mv "lib/plug-ins/shoesfu.tmp.rb", "#{USERDIR}/plug-ins/shoesfu.rb"
             
-            cp_r Dir.glob("lib/plug-ins/*shoes*"), "#{USERDIR}/plug-ins"
+            cp_r Dir.glob("lib/plug-ins/*shoes*")- ["lib/plug-ins/shoesfu.rb"], "#{USERDIR}/plug-ins"
         end
         
         def copy_env_interp
