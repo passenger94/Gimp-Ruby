@@ -57,15 +57,15 @@ Shoes.app title: "Gimp-Ruby Guide and Tutorial", width: 600, height: 700 do
         
         str.split(/^# (.+)/)[1..-1].each_slice(2) do |k,v|
             level2 = v.split(/^## (.+)/)
-
+            
             text << span(k, style_level1 ) << level2[0]
-
+            
             level2[1..-1].each_slice(2) do |k2,v2|
                 level3 = v2.split(/^### (.+)/)
-
+                
                 text << span(*check_ems(k2), style_level2 )
                 text += check_codes(level3[0])
-
+                
                 level3[1..-1].each_slice(2) do |k3,v3|
                     text << span(*check_ems(k3), style_level3 )
                     text += check_codes(v3)

@@ -29,7 +29,7 @@ RubyFu.register(
     :author     => nil,             
     :copyright  => nil,             
     :date       => nil,             
-    :menulabel   => nil,             
+    :menulabel  => nil,             
     :imagetypes => nil,             
     :params     => nil,             
     :results    => nil,             
@@ -170,7 +170,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Shelf",
+    :menulabel  => "Shelf",
     :imagetypes => nil,
     :params     => [],
     :results    => []
@@ -206,7 +206,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => nil,
+    :menulabel  => nil,
     :imagetypes => nil,
     :params     => [], 
     :results    => []
@@ -324,7 +324,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Dialog",
+    :menulabel  => "Dialog",
     :imagetypes => nil,
     :params     => [
         RubyFu::ParamDef.INT32("int32", "INT32", 32),

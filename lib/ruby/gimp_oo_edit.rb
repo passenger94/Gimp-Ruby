@@ -19,13 +19,13 @@
 require 'gimp_oo.rb'
 
 module Gimp
-	Edit = GimpOO::ModuleTemplate.template('gimp-edit-', [])
-
-	module Edit
-	    class << self
+    Edit = GimpOO::ModuleTemplate.template('gimp-edit-', [])
+    
+    module Edit
+        class << self
             def pasteAnchor(drawable, paste_into=true)
                 PDB.gimp_floating_sel_anchor(PDB.gimp_edit_paste(drawable, paste_into))
             end
-	    end
-	end
+        end
+    end
 end

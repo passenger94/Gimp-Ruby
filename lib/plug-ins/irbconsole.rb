@@ -31,7 +31,7 @@ module IRB
           @stdout = IO.open(STDOUT.to_i, 'w', :external_encoding => IRB.conf[:LC_MESSAGES].encoding, :internal_encoding => "-")
         end
     end
-
+    
     def self.start_session(io = nil)
         puts _("###              Irb on Ruby-#{RUBY_VERSION}")
         require 'imageDrawable4console.rb'
@@ -41,14 +41,14 @@ module IRB
         IRB.setup(nil)
         
         irb = Irb.new(nil, io.nil? ? IRB::StdioInputMethod.new : RGconsoleInputMethod.new(io))
-
+        
         @CONF[:IRB_RC].call(irb.context) if @CONF[:IRB_RC]
         @CONF[:MAIN_CONTEXT] = irb.context
-
+        
         trap("SIGINT") do
             irb.signal_handle
         end
-
+        
         catch(:IRB_EXIT) do
             irb.eval_input
         end
@@ -63,7 +63,7 @@ RubyFu.register(
     :author    => "Scott Lembcke/xy",
     :copyright => "Scott Lembcke/xy",
     :date      => "2015",
-    :menulabel  => _("Ruby Console - Image")
+    :menulabel => _("Ruby Console - Image")
 ) do |run_mode|
     
     include Gimp

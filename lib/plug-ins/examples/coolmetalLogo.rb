@@ -114,7 +114,7 @@ register(
         ],
     :results    => []
 ) do |run_mode, text, size, font, bg_color, gradient, gradient_reverse|
-	include PDB::Access
+    include PDB::Access
     
     img = Image.new 256, 256, RGB
     #text_layer = gimp_text_fontname(img, -1, 0, 0, text, 0, true, size, PIXELS, font)
@@ -126,8 +126,8 @@ register(
       Context.push do
         apply_cool_metal_logo_effect(img, text_layer, size, bg_color, gradient, gradient_reverse)
       end
-	end
-	Display.new(img)
+    end
+    Display.new(img)
 end
 
 menu_register("ruby-fu-cool-metal-logo", "<Image>/File/Create/RubyFu")
@@ -141,7 +141,7 @@ register(
     :author     => "Spencer Kimball & Rob Malda & xy",
     :copyright  => "Spencer Kimball & Rob Malda",
     :date       => "2008",
-    :menulabel   => "Cool Metal",
+    :menulabel  => "Cool Metal",
     :imagetypes => "RGBA",
     :params     => [
         ParamDef.SPINNER("size","Effect size (pixels)", 100, (2..1000), 1),
@@ -151,7 +151,7 @@ register(
         ],
     :results    => []
 ) do |run_mode, img, logo_layer, size, bg_color, gradient, gradient_reverse|
-	include PDB::Access
+    include PDB::Access
         
     if logo_layer.floating_sel?
         gimp_floating_sel_to_layer logo_layer

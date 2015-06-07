@@ -58,7 +58,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
         @term = stack width: -115 do
             @preamble = para "", font: "Monospace 12px", stroke: silver, margin_left: 10
             @console = para "", font: "Monospace 13px", stroke: "#fff", wrap: "char", margin: [10,0,0,10]
-
+            
             @entry = edit_line "", width: 0.9, margin: [10,10,0,10]
             @entry.finish = proc { |e| @console.replace(@console.text, strong("#{e.text}\n"))
                                        puts e.text
@@ -94,7 +94,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
                 "12"=>"DISPLAY", "13"=>"IMAGE", "14"=>"LAYER", "15"=>"CHANNEL", 
                 "16"=>"DRAWABLE", "17"=>"SELECTION", "18"=>"COLORARRAY", "19"=>"VECTORS", 
                 "20"=>"PARASITE", "21"=>"STATUS", "22"=>"END"}
-
+            
             
             def build_proc(name, args, vals)
                 pre = vals.each_with_object("") { |v,obj| obj << "#{v.gsub('-', '_')}, " }
@@ -141,7 +141,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
                         end), margin: [20,0,0,10]
                     
                     para blurb
-
+                    
                     para "Parameters :  (#{n_args})", @style_bold
                     args = get_args(name, n_args, "arg")
                     args.each do |k,v|

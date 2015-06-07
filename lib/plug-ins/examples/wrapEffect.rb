@@ -6,26 +6,26 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	:name       => "ruby-fu-wrap-effect",
-	:blurb      => "draw with wrap effect",
-	:help       => "draw with wrap effect",
-	:author     => "Masahiro Sakai, iccii, xy",
-	:copyright  => "Masahiro Sakai, iccii, xy",
-	:date       => "2008",
-	:menulabel   => "wrap effect ...",
-	:imagetypes => "RGB*",
-	:params     => [
+    :name       => "ruby-fu-wrap-effect",
+    :blurb      => "draw with wrap effect",
+    :help       => "draw with wrap effect",
+    :author     => "Masahiro Sakai, iccii, xy",
+    :copyright  => "Masahiro Sakai, iccii, xy",
+    :date       => "2008",
+    :menulabel   => "wrap effect ...",
+    :imagetypes => "RGB*",
+    :params     => [
             ParamDef.SPINNER("radius", "Randomness", 10, (0..32), 1),
             ParamDef.SPINNER("gamma1", "Highlight Balance", 3, (1..10), 0.5),
             ParamDef.SPINNER("gamma2", "Edge Amount", 3, (1..10), 0.5),
             ParamDef.TOGGLE("smooth", "Smooth", 0)
                    ],
-	:results    => []
-	
+    :results    => []
+    
 ) do |run_mode, image, drawable, radius, gamma1, gamma2, smooth|
-	include PDB::Access
-	Context.push do
-		image.undo_group_start do
+    include PDB::Access
+    Context.push do
+        image.undo_group_start do
             
             wraplayer = image.get_active_layer.copy(1)
             wraplayer.set_name "Wrap effect"
@@ -47,10 +47,10 @@ RubyFu.register(
             gimp_floating_sel_anchor(Edit.paste(wrapMask, true))
             2.times {wrapMask.levels(HISTOGRAM_VALUE, 0, 1, gamma2 / 10, 0, 1)}
             
-			gimp_progress_end # getting rid of annoying dialog warning 
-		end # undo_group
-	end # Context
-	Display.flush
+            gimp_progress_end # getting rid of annoying dialog warning 
+        end # undo_group
+    end # Context
+    Display.flush
 end
 
 RubyFu.menu_register("ruby-fu-wrap-effect", "<Image>/Fus/Ruby-Fu/Alchemy")

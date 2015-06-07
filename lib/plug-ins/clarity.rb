@@ -6,25 +6,25 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-clarity',
-	  :blurb      => 'Clarity filter',
-	  :help       => 'Clarity filter',
-	  :author     => 'John Lakkas, xy',
-	  :copyright  => 'John Lakkas, xy',
-	  :date       => '2014',
-	  :menulabel   => 'clarity',
-	  :imagetypes => '*',
-	  :params     => [
-	                  RubyFu::ParamDef.SLIDER("radius", "Radius", 400, (1.0..500.0), 1.0),
-	                  RubyFu::ParamDef.SLIDER("amount", "Amount", 0.9, (0.0..10), 0.1),
-	                  RubyFu::ParamDef.TOGGLE("grouping", "grouping layers ? ", 0)
-	                 ],
-	  :results    => []
+    :name       => 'ruby-fu-clarity',
+    :blurb      => 'Clarity filter',
+    :help       => 'Clarity filter',
+    :author     => 'John Lakkas, xy',
+    :copyright  => 'John Lakkas, xy',
+    :date       => '2014',
+    :menulabel  => 'clarity',
+    :imagetypes => '*',
+    :params     => [
+                    RubyFu::ParamDef.SLIDER("radius", "Radius", 400, (1.0..500.0), 1.0),
+                    RubyFu::ParamDef.SLIDER("amount", "Amount", 0.9, (0.0..10), 0.1),
+                    RubyFu::ParamDef.TOGGLE("grouping", "grouping layers ? ", 0)
+                   ],
+    :results    => []
 
 ) do |run_mode, image, drawable, radius, amount, grouping|
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)
-	
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)
+    
     Context.push do
         image.undo_group_start do
             
@@ -70,11 +70,11 @@ RubyFu.register(
                 l_group.set_name "Clarity filter"
                 [layer_base, layer_usm].each {|i| image.reorder_item(i, l_group, 0)}
             end
-			
-			gimp_progress_end # getting rid of annoying dialog warning 
-		end # undo_group
+            
+            gimp_progress_end # getting rid of annoying dialog warning 
+        end # undo_group
     end # Context
-	Display.flush
+    Display.flush
 end
 
 RubyFu.menu_register('ruby-fu-clarity', '<Image>/Fus/Ruby-Fu/')

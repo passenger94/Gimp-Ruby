@@ -6,24 +6,24 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-check_layer',
-	  :blurb      => 'see blue channel quirks',
-	  :help       => '......',
-	  :author     => 'xy, pat david',
-	  :copyright  => 'xy, pat david',
-	  :date       => '2014',
-	  :menulabel   => 'check layer',
-	  :imagetypes => '*',
-	  :params     => [],
-	  :results    => []
-
+    :name       => 'ruby-fu-check_layer',
+    :blurb      => 'see blue channel quirks',
+    :help       => '......',
+    :author     => 'xy, pat david',
+    :copyright  => 'xy, pat david',
+    :date       => '2014',
+    :menulabel  => 'check layer',
+    :imagetypes => '*',
+    :params     => [],
+    :results    => []
+    
 ) do |run_mode, image, drawable|
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)
-	
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)
+    
     Context.push do
         image.undo_group_start do
-			
+            
             yellow = image.addLayer_from_drawable(drawable)
             Context.set_foreground(Color(255/255.0, 255/255.0, 0/255.0))
             yellow.fill(FILL_FOREGROUND)
@@ -43,10 +43,10 @@ RubyFu.register(
             dodge.set_name("Dodge")
             
             image.set_active_layer(drawable)
-			
-		end # undo_group
+            
+        end # undo_group
     end # Context
-	Display.flush
+    Display.flush
 end
 
 RubyFu.menu_register('ruby-fu-check_layer', '<Image>/Fus/Ruby-Fu/')

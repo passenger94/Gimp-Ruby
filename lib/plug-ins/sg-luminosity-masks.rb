@@ -6,25 +6,25 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-sg-luminosity-masks',
-	  :blurb      => '...',
-	  :help       => '......',
-	  :author     => 'saul goode',
-	  :copyright  => 'saul goode',
-	  :date       => '2014',
-	  :menulabel   => 'sg-luminosity-masks',
-	  :imagetypes => '*',
-	  :params     => [],
-	  :results    => []
+    :name       => 'ruby-fu-sg-luminosity-masks',
+    :blurb      => '...',
+    :help       => '......',
+    :author     => 'saul goode',
+    :copyright  => 'saul goode',
+    :date       => '2014',
+    :menulabel  => 'sg-luminosity-masks',
+    :imagetypes => '*',
+    :params     => [],
+    :results    => []
 
 ) do |run_mode, image, drawable|
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)
-	
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)
+    
     Context.push do
         image.undo_group_start do
-			
-			orig_sel = gimp_selection_save(image)
+            
+            orig_sel = gimp_selection_save(image)
             L = Selection.save(image)
             Selection.none(image)
             masks = [L]
@@ -114,9 +114,9 @@ RubyFu.register(
                 end
             end
             
-		end # undo_group
+        end # undo_group
     end # Context
-	Display.flush
+    Display.flush
 end
 
 RubyFu.menu_register('ruby-fu-sg-luminosity-masks', '<Image>/Fus/Ruby-Fu/')

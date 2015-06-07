@@ -89,7 +89,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
         @term = stack width: -115 do
             @preamble = para "", font: "Monospace 12px", stroke: silver, margin_left: 10
             @console = para "", font: "Monospace 13px", stroke: "#fff", wrap: "char", margin: [10,0,0,10]
-
+            
             @entry = edit_line "", width: 0.9, margin: [10,10,0,10]
             @entry.finish = proc { |e| #@console.replace(@console.text, strong("#{e.text}\n"))
                                        puts e.text
@@ -167,7 +167,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
                     inscription em("#{@proctypes[type]} procedure"), margin: [20,0,0,10]
                     
                     para blurb
-
+                    
                     para "Parameters :  (#{n_args})", @style_bold
                     args = get_args(name, n_args, "arg")
                     args.each do |k,v|

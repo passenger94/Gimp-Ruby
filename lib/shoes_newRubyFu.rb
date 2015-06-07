@@ -122,9 +122,9 @@ Default_help = [Image_help,
         end
     end
     
-	def populate_row(listbox_text)
-	    labels = ["name","label"]
-	    case listbox_text
+    def populate_row(listbox_text)
+        labels = ["name","label"]
+        case listbox_text
             when "IMAGE", "LAYER", "CHANNEL", "DRAWABLE"
                 text = Image_help
             when "LIST"
@@ -141,50 +141,50 @@ Default_help = [Image_help,
                 text = Default_help
         end
         
-	    labels.each do |label|
-	        para label
-	        edit_line "", :width => 110
-	    end
-	    
+        labels.each do |label|
+            para label
+            edit_line "", :width => 110
+        end
+        
         flow :width => 40, :margin_left => 5 do
            fill black
            oval 3, 0, 26
            click { pop_help(listbox_text, text) }
            inscription "help", :stroke => white 
         end
-	end
-
-	def add_paramdef
-		@paramdef.append do
-		    flow do
+    end
+    
+    def add_paramdef
+        @paramdef.append do
+            flow do
                 list_box :items => TYPESPARAMDEF, :choose => "none", :width => 120 do |list|
                     list.parent.contents[1..-1].each {|el| el.remove}
                     list.parent.append { populate_row(list.text) }
                 end
             end
-		end
-	end
+        end
+    end
     
-	def del_paramdef
-		@paramdef.contents.last.remove
-	end
-	
-	def do_paramdef
-		return ["[]",""] if @paramdef.contents.empty?
-		
-		@toggles = []
-		indent = "\n            "
-		result = ["[#{indent}", ""]
+    def del_paramdef
+        @paramdef.contents.last.remove
+    end
+    
+    def do_paramdef
+        return ["[]",""] if @paramdef.contents.empty?
         
-		@paramdef.contents.each do |fl|
-			f = fl.contents
+        @toggles = []
+        indent = "\n            "
+        result = ["[#{indent}", ""]
+        
+        @paramdef.contents.each do |fl|
+            f = fl.contents
             # f[0]--> ParamDef type, f[2]--> argument name, f[4]--> gui label
             # f[6]--> default value, f[8]--> array/range, f[10]--> step
-			result[0] << "ParamDef.#{f[0].text}('#{f[2].text}', '#{f[4].text}'"
-			
-			if f[0].text == "none"
-			    result[0] = "[,#{indent}"
-			else
+            result[0] << "ParamDef.#{f[0].text}('#{f[2].text}', '#{f[4].text}'"
+            
+            if f[0].text == "none"
+                result[0] = "[,#{indent}"
+            else
                 result[0] << case f[0].text
                     when "IMAGE",	"LAYER", "CHANNEL",	"DRAWABLE"
                          ")"
@@ -212,17 +212,17 @@ Default_help = [Image_help,
                         ", \"#{f[6].text}\")" # INT8ARRAY implemented as a String
                 end  << ",#{indent}"
                 
-			    result[1] << ", #{f[2].text}"
-			end
-		end
-		result[0][-14..-1] = "#{indent}        ]" # closing bracket, get rid of last coma and one 4 spaces
-		result
-	end
-	
-	
-	## UI
-	background rgb(242,241,240)
-	stack margin_left: 10 do
+                result[1] << ", #{f[2].text}"
+            end
+        end
+        result[0][-14..-1] = "#{indent}        ]" # closing bracket, get rid of last coma and one 4 spaces
+        result
+    end
+    
+    
+    ## UI
+    background rgb(242,241,240)
+    stack margin_left: 10 do
         flow do
             stack width: 730, margin: 10 do
                 flow margin: [0,10,0,20] do
@@ -276,23 +276,23 @@ Default_help = [Image_help,
                     end
                     @typewarn = para "", :stroke => red, :margin_left => 50
                 end
-
+                
                 flow do
                     @blurb = label_edit "blurb : ", "...", 330
-
+                    
                     @help = label_edit "help : ", "......", 380
                     @help.wlabel.style margin_left: 45
                     @help.wedit_line.style width: 300
                 end
-
+                
                 flow do
                     @author = label_edit "author : ", "", 230
                     @author.wedit_line.style width: 120
-
+                    
                     @copyr = label_edit "copyright : ", "", 230
                     @copyr.wlabel.style margin_left: 20
                     @copyr.wedit_line.style width: 120
-
+                    
                     @date = label_edit "date : ", "", 230
                     @date.wlabel.style margin_left: 50
                     @date.wedit_line.style width: 120
@@ -304,7 +304,7 @@ Default_help = [Image_help,
                 button("Preview", :margin => [0,0,0,20], :width => 80) {preview_fu(create_fu)}
                 button("OK", :width => 80) {write_fu(create_fu)}
             end
-
+            
         end # flow
         
         stack :margin => [0,10,5,5] do
@@ -320,21 +320,21 @@ Default_help = [Image_help,
             @paramdef = stack :margin => [0,10,0,0]
         end 
             
-	end # main stack
-	
-	add_paramdef
+    end # main stack
+    
+    add_paramdef
     
     
     
-	def create_fu
-		params, vars = do_paramdef
+    def create_fu
+        params, vars = do_paramdef
         
         # convenience method translating gimp boolean into ruby boolean
-		init_toggles = @toggles.empty? ? "" : @toggles.each_with_object(["\n\t"]) {|t,obj| obj << "\n\t#{t} = (#{t} == 1)"}.join
-		
+        init_toggles = @toggles.empty? ? "" : @toggles.each_with_object(["\n\t"]) {|t,obj| obj << "\n\t#{t} = (#{t} == 1)"}.join
+        
         actions, display = @doDomain == "run_mode" ? ['disable', ''] : ['group_start', 'Display.flush']
         
-		code = "#!ruby
+        code = "#!ruby
 
 require 'rubyfu'
 
@@ -354,9 +354,9 @@ RubyFu.register(
 	:results    =>  #{@results}
 
 ) do |#{@doDomain}#{vars}|
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)#{init_toggles}
-	#{@doDomain == "run_mode" ? "\n    image = Image.new(width, height, 0)\n    " : ""}
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)#{init_toggles}
+    #{@doDomain == "run_mode" ? "\n    image = Image.new(width, height, 0)\n    " : ""}
     Context.push do
         image.undo_#{actions} do
             
@@ -370,7 +370,7 @@ end
 RubyFu.menu_register('ruby-fu-#{@fonction.wtext}', '#{@menupath.wtext}')
 
 "
-	end # create_fu
+    end # create_fu
     
     def preview_fu(code)
         window title: "Preview", height: 700, width: 600 do
@@ -397,7 +397,7 @@ RubyFu.menu_register('ruby-fu-#{@fonction.wtext}', '#{@menupath.wtext}')
             alert "#{e.message}\nPlease, i need a file to save code into ..."
         end
     end
-	
+    
 end
 
- 
+

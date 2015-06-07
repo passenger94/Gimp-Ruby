@@ -35,7 +35,7 @@ module Gimp
         'group?',    # delegate to Item (through Drawable)
         'text_layer?'
     ]
-  
+    
     Layer = GimpOO::ClassTemplate.template('gimp-layer-', blacklist,
                                             nil, [],
                                             Gimp::Drawable)
@@ -48,17 +48,17 @@ module Gimp
             PDB.gimp_text_layer_new(*var) 
         end
         module_function :new
-    
+        
         prefix = 'gimp-text-layer-'
         PDB['gimp-procedural-db-query'].call(prefix, *(['']*6))[1].each do |proc_name|
             method_name = proc_name[prefix.length..-1].gsub('-','_')
-
+            
             next if ['new',         # clash with Layer.new, made avalaible as TextLayer.new
                      'resize',      # clash with Layer#resize, use gimp_text_layer_resize
                     'get_hinting'   # deprecated for 'get_hint_style'
                     # 'set_hinting' ?? not deprecated ?
             ].include? method_name
-
+            
             self.module_eval """
                 def #{method_name}(*args)
                     PDB['#{proc_name}'].call(self, *args)
@@ -83,15 +83,15 @@ module Gimp
             themask = PDB.gimp_layer_create_mask(self, addMaskType)
             PDB.gimp_layer_add_mask(self, themask)
             themask
-	    end
-	    
-	    def floating_sel?
-	        PDB.gimp_layer_is_floating_sel(self) == 1 ? true : false
-	    end
-	    
-	    def mergeDown(mergeType=CLIP_TO_IMAGE)
+        end
+        
+        def floating_sel?
+            PDB.gimp_layer_is_floating_sel(self) == 1 ? true : false
+        end
+        
+        def mergeDown(mergeType=CLIP_TO_IMAGE)
             PDB.gimp_image_merge_down(PDB.gimp_item_get_image(self), self, mergeType)
-	    end
+        end
         
         def resize(*args)
             if args.size == 4
@@ -100,7 +100,7 @@ module Gimp
                 PDB.gimp_text_layer_resize(self, *args)
             end
         end
-	    
+        
     end
     
 end

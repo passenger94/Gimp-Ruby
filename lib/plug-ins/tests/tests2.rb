@@ -19,7 +19,7 @@ assert = ->(obj, met) {
         :results    => []
     ) do |run_mode, image, drawable|
         include PDB::Access
-
+        
         msg = "Should respond to a #{obj} method \n"
         begin
             drawable.send(met)
@@ -50,11 +50,11 @@ register(
     :params     => [],
     :results    => []
 ) do |run_mode|
-	include PDB::Access
+    include PDB::Access
     
     img = Image.new 256, 256, RGB
     test_layer = img.addLayer(img.width, img.height, RGBA_IMAGE, "test layer", 100, NORMAL_MODE)
-	Display.new(img)
+    Display.new(img)
     
     ruby_fu_test_drawable_subclass_layer(img, test_layer)
     
