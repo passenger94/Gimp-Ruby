@@ -1,0 +1,90 @@
+
+Works/tested on ruby 2.1.5/2.2.1 (works probably from 1.9 to 2.xx) and Gimp 2.8.14 / 2.9.1 - Linux (Ubuntu)
+    can not mix with the 2 versions of gimp, at compile time, API is different, nothing awful in plug-ins (scripts) code, though
+    lots of constants names have changed, like BACKGROUND_FILL to FILL_BACKGROUND for example
+
+Renamed :menupath key to :menulabel in register method
+Added Item Class/feature
+Added TextLayer module (extended in Layer Class on instance of them which respond true to :is_text_layer)
+    There is no "text layer" type in gimp C code, so a TextLayer is a Layer Class with some specialized methods
+Added 'to_bool' method on Integer
+Added helper methods on Image, Layer, Edit, Item (overwrited "==" )
+    also idiomatic ruby method like "method?" on Display, Drawable, Item, Gradient, Image, Palette, Selection
+Fixed Access module (working nice now but looks ugly)
+Fixed errors/crashes due to changes in splat operator behavior since ruby 1.9
+Added possibility to have an Image context procedure not appearing in menus (for shortcuts)
+        when not working on an image just register a proc without args in the block
+        must be a better way !
+Fixed Brushes/Palettes/Gradients/Patterns dialogs
+Gtk Console + Irb is working now but needs to be rewamped, added a (very) basic browse button
+Fixed typo in rbgimpproceduraldb.c : 'gimp_procedural_db_proc_val' was 'gimp_procedural_db_proc_arg'  twice :-)
+
+Added, reworked, updated ruby plug-ins
+
+Added optional Shoes dialogs feature
+    https://github.com/Shoes3/shoes3
+"shoes_guide.rb" guide and tutorial in shoes (needs a serious update)
+"shoes_console.rb" a shoes console (WIP), alternative to ruby-fu-console
+    soon byebug powered, pry maybe ?
+"shoes_newRubyFu.rb" an app which builds a skeleton plug-in
++ plugins : a ShoesFu module to interface between Gimp/Ruby and Shoes, using Open3
+        plugin are working by pair : one file for gimp, one for Shoes
+
+totally dumped support for ruby 1.8
+
+building using rake and libtool
+left the make files (it's working but had to edit files, switched to rake for now  until i get a better idea of what's going on in autotmake etc) but do we need a so massive engive for building ? 
+--> dig into rake-compiler
+find how to cleanly get rid of config.h
+
+
+Gimp is caching data (pluginrc) about the procedures (menulabel for example), to force an update, re-save the plug_in
+
+cannot call some procedures in interactive mode anymore on 2.9, temporary on beta ? new filters on Gegl ?
+
+Fixed ! gimp.rb -- Param#transform --
+(when in Image context, RubyFu.register sends back at run time a Gimp::ParamDef.DRAWABLE as third mandatory argument
+this causes problems if consecutive code expect a subclass of Drawable, a Layer or a Channel, we need to "Cast" to the appropriate Class before processing, ie: Layer.create(data) )
+
+Fixed ! conversion.c -- GimpParam2rb -> switch (type) -> case GIMP_PDB_STRING:
+Fix bad crash with 'gimp_procedural_db_proc_info' on deprecated procedures
+because they returned NULL values (some return values are explicitely missing because of the deprecation)
+Do we need cheks on other GimpParamData union members ? (see gimp.h)
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+Original todo.txt
+--------------------------------------------------------------------------------
+
+Make sure all the useful parts of the C API were wrapped. 
+
+Weird crash occurs in the call test when testing the incoming arguments?
+
+The color code has turned out to be sub-par, lots of room for improvment.
+
+Figure out how the brush selection should really work.
+
+Add a reset button to the interactive dialog.
+
+Add more control to widget resizing for the dialog.
+
+Add autoconf checks for gettext support.
+- Ruby gettext may be available as a gems package or a non-gems package.
+  The check for gettext should not expect either method of its existance.
+
+Add check in build environment for irb.
+- If irb doesn't exist, don't build ruby-fu-console.c or install console
+  mode script.
+
+Add extraction of translatable strings to build process.
+
+Add an INSTALL file that explains the requirements and process to build and
+install gimp-ruby.
+
+Add a browse button to console mode.
+- This may require creation of a PDB browser that can return the framework
+  of a call to the selected PDB item in a Ruby compatible format.

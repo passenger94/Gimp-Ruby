@@ -1,0 +1,8 @@
+name: gimp-ruby
+major: 0
+minor: 1
+tiny: 5
+release: 
+revision: 
+gimp_prefix: /home/xy/gimp29
+shoes: /home/xy/NBWorkspace/shoes3/dist/shoes
