@@ -29,6 +29,7 @@ class MakeLinux
             copy_ruby_lib
             copy_plugins
             copy_statics
+            copy_env_interp
         end
         
         def copy_ext
@@ -57,6 +58,30 @@ class MakeLinux
             mv "lib/plug-ins/shoesfu.tmp.rb", "lib/plug-ins/shoesfu.rb"
             
             cp_r Dir.glob("lib/plug-ins/*shoes*"), "#{USERDIR}/plug-ins"
+        end
+        
+        def copy_env_interp
+            unless File.exist?("#{USERDIR}/environ/ruby.env")
+                open("lib/env_interp/ruby.env", 'w') do |f|
+                    f.write "RUBYLIB=#{USERDIR}/ruby"
+                end
+                cp "lib/env_interp/ruby.env", "#{USERDIR}/environ"
+            end
+            
+            unless File.exist?("#{USERDIR}/interpreters/ruby.interp")
+                # TODO probably lots of case to deal with (regular installed ruby, custom, rubyversion, ...)
+                rubyprefix = RbConfig::CONFIG["prefix"]
+                # we have rvm
+                interpr = if rubyprefix =~ /(.+\.rvm)\/rubies\/(ruby-\d.\d.\d)/
+                    "#{$1}/wrappers/#{$2}/ruby"
+                else
+                    "ruby"
+                end
+                open("lib/env_interp/ruby.interp", 'w') do |f|
+                    f.write "ruby=#{interpr}\n/usr/bin/ruby=#{interpr}\n:Ruby:E::rb::ruby:"
+                end
+                cp "lib/env_interp/ruby.interp", "#{USERDIR}/interpreters"
+            end
         end
         
         def copy_statics
