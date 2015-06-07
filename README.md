@@ -1,6 +1,6 @@
 
 # Gimp-Ruby 
-    *(started here at 0.1.5)*
+*(started here at 0.1.5)*
 
 A ruby plug_in for The Gimp, initially wrote by Scott Lembcke in 2006 (https://github.com/slembcke).
 
