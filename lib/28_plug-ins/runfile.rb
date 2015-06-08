@@ -36,7 +36,7 @@ module RubyFu
     when :toolbox
       proc.run(Param.INT32(RUN_INTERACTIVE))
     when :image
-      image = Param.IMAGE(PDB.gimp_drawable_get_image(drawable))
+      image = Param.IMAGE(PDB.gimp_item_get_image(drawable))
       drawable = Param.DRAWABLE(drawable)
       proc.run(Param.INT32(RUN_INTERACTIVE), image, drawable)
     else
@@ -64,7 +64,7 @@ register(
   :imagetypes => nil, #image types
   :params     => [
                   ParamDef.FILE("file", "File"),
-                  ParamDef.STRING("procedure", "Procedure name", "ruby-fu-"),
+                  ParamDef.STRING("procedure", "Procedure name\n(only needed if there is \nseveral procedures in the file)", "ruby-fu-"),
                   ParamDef.DRAWABLE("drawable", "Drawable (if needed)"),
                  ], #params
   :results    => [] #results

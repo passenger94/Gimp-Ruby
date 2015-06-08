@@ -6,40 +6,40 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-clarity',
-	  :blurb      => 'Clarity filter',
-	  :help       => 'Clarity filter',
-	  :author     => 'John Lakkas, xy',
-	  :copyright  => 'John Lakkas, xy',
-	  :date       => '2014',
-	  :menulabel   => 'clarity',
-	  :imagetypes => '*',
-	  :params     => [
-	                  RubyFu::ParamDef.SLIDER("radius", "Radius", 400, (1.0..500.0), 1.0),
-	                  RubyFu::ParamDef.SLIDER("amount", "Amount", 0.9, (0.0..10), 0.1),
-	                  RubyFu::ParamDef.TOGGLE("grouping", "grouping layers ? ", 0)
-	                 ],
-	  :results    => []
-
+    :name       => 'ruby-fu-clarity',
+    :blurb      => 'Clarity filter',
+    :help       => 'Clarity filter',
+    :author     => 'John Lakkas, xy',
+    :copyright  => 'John Lakkas, xy',
+    :date       => '2014',
+    :menulabel  => 'clarity',
+    :imagetypes => '*',
+    :params     => [
+                    RubyFu::ParamDef.SLIDER("radius", "Radius", 400, (1.0..500.0), 1.0),
+                    RubyFu::ParamDef.SLIDER("amount", "Amount", 0.9, (0.0..10), 0.1),
+                    RubyFu::ParamDef.TOGGLE("grouping", "grouping layers ? ", 0)
+                   ],
+    :results    => []
+    
 ) do |run_mode, image, drawable, radius, amount, grouping|
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)
-	
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)
+    
     Context.push do
         image.undo_group_start do
             
-            layer_tmp = image.addLayer_from_drawable(drawable)
-            gimp_desaturate_full layer_tmp, DESATURATE_LIGHTNESS
+            #layer_tmp = image.addLayer_from_drawable(drawable)
+            #gimp_desaturate_full layer_tmp, DESATURATE_LIGHTNESS
             # getting midtones  
                 ## no interactive mode !
-				#PDB.call_interactive("gimp_curves_spline", image, layer_tmp) 
+                #PDB.call_interactive("gimp_curves_spline", image, layer_tmp) 
             # gimp_curves_spline(layer_tmp, HISTOGRAM_VALUE, 6, [64, 0, 128, 255, 192, 0].pack("C6")) # on 8bits image (gimp2.8)
-			# layer_tmp2 = layer_tmp.copy(false)
-			# image.insert_layer(layer_tmp2, nil, -1)
-			# gimp_invert(layer_tmp2)
-			# layer_tmp2.set_mode(DIFFERENCE_MODE)
-			# layer_tmp = layer_tmp2.mergeDown(CLIP_TO_IMAGE)
-			# gimp_invert(layer_tmp)
+            # layer_tmp2 = layer_tmp.copy(false)
+            # image.insert_layer(layer_tmp2, nil, -1)
+            # gimp_invert(layer_tmp2)
+            # layer_tmp2.set_mode(DIFFERENCE_MODE)
+            # layer_tmp = layer_tmp2.mergeDown(CLIP_TO_IMAGE)
+            # gimp_invert(layer_tmp)
             
             # getting midtones
             L = Selection.save(image) #creates a channel
@@ -70,11 +70,11 @@ RubyFu.register(
                 l_group.set_name "Clarity filter"
                 [layer_base, layer_usm].each {|i| image.reorder_item(i, l_group, 0)}
             end
-			
-			gimp_progress_end # getting rid of annoying dialog warning 
-		end # undo_group
+            
+            gimp_progress_end # getting rid of annoying dialog warning 
+        end # undo_group
     end # Context
-	Display.flush
+    Display.flush
 end
 
 RubyFu.menu_register('ruby-fu-clarity', '<Image>/Fus/Ruby-Fu/')

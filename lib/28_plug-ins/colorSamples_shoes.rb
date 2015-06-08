@@ -36,33 +36,33 @@ samples = {
 
 samples.each do |k,v|
     RubyFu.register(
-	      :name       => "ruby-fu-sample_colorize_#{v[0]}",
-	      :blurb      => "sample colorize '#{k}'",
-	      :help       => "sample colorize '#{k}'",
-	      :author     => 'xy',
-	      :copyright  => 'xy',
-	      :date       => '2015',
-	      :menulabel   => k,
-	      :imagetypes => '*',
-	      :params     => [],
-	      :results    => []
-
+        :name       => "ruby-fu-sample_colorize_#{v[0]}",
+        :blurb      => "sample colorize '#{k}'",
+        :help       => "sample colorize '#{k}'",
+        :author     => 'xy',
+        :copyright  => 'xy',
+        :date       => '2015',
+        :menulabel  => k,
+        :imagetypes => '*',
+        :params     => [],
+        :results    => []
+        
     ) do |run_mode, image, drawable|
-	    include PDB::Access
-	    gimp_message_set_handler(ERROR_CONSOLE)
-	
+        include PDB::Access
+        gimp_message_set_handler(ERROR_CONSOLE)
+        
         Context.push do
             image.undo_group_start do
-			    sample_image = file_png_load("#{SAMPLESDIR}/#{v[1]}", "#{v[1]}")
+                sample_image = file_png_load("#{SAMPLESDIR}/#{v[1]}", "#{v[1]}")
                 sample_drw = sample_image.layersOO[0]
                 
                 plug_in_sample_colorize(image, drawable, sample_drw, false, false, true, true, 0, 255, 1.0, 0, 255)    
-			    
+                
                 sample_image.delete
-			
-		    end # undo_group
+                
+            end # undo_group
         end # Context
-	    Display.flush
+        Display.flush
     end
     
     RubyFu.menu_register("ruby-fu-sample_colorize_#{v[0]}", '<Image>/Fus/Ruby-Fu/extendedSampleColorize/thepdbmethods/')
@@ -72,19 +72,19 @@ end
 
 
 RubyFu.register(
-  :name       => "ruby-fu-shoes_sample_colorize",
-  :blurb      => "Visualy choose a pattern for the sample-colorize plugin",
-  :help       => "Visualy choose a pattern for the sample-colorize plugin",
-  :author     => "xy",
-  :copyright  => "xy",
-  :date       => "2015",
-  :menulabel   => "Shoes's sample colorize",
-  :imagetypes => "*",
-  :params     => [],
-  :results    => []
-
+    :name       => "ruby-fu-shoes_sample_colorize",
+    :blurb      => "Visualy choose a pattern for the sample-colorize plugin",
+    :help       => "Visualy choose a pattern for the sample-colorize plugin",
+    :author     => "xy",
+    :copyright  => "xy",
+    :date       => "2015",
+    :menulabel  => "Shoes's sample colorize",
+    :imagetypes => "*",
+    :params     => [],
+    :results    => []
+    
 ) do |run_mode, image, drawable|
-	include PDB::Access
+    include PDB::Access
     gimp_message_set_handler(ERROR_CONSOLE)
     
     Context.push do
@@ -96,12 +96,12 @@ RubyFu.register(
             ret = go_steppin("colorSamples_shoesgui.rb", [image.to_int, copy_layer.to_int, samples].to_json)
             
             PDB.send("ruby-fu-sample_colorize_#{ret.last}", image, drawable) unless ret.first == "cancelled"
-			
-			image.remove_layer(copy_layer)
-		end # undo_group
-		
-		Display.flush
-	end # Context
+            
+            image.remove_layer(copy_layer)
+        end # undo_group
+        
+        Display.flush
+    end # Context
 end
 
 RubyFu.menu_register("ruby-fu-shoes_sample_colorize", '<Image>/Fus/Ruby-Fu/extendedSampleColorize/') 

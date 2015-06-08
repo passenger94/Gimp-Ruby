@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-$KCODE='U'
 
 require 'rubyfu'
 
@@ -7,23 +6,23 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-bilateral-luma-chroma',
-	  :blurb      => 'Gmic selective bilateral smooth on LAB',
-	  :help       => 'Gmic selective bilateral smooth on LAB channels and recompose as a new layer',
-	  :author     => 'xy',
-	  :copyright  => 'xy',
-	  :date       => '2013',
-	  :menulabel   => 'bilateral Luma Chroma',
-	  :imagetypes => '*',
-	  :params     => [
-			ParamDef.TOGGLE('keep', 'keep intermediate LAB image ?', 0)	
-					],
-	  :results    => []
-
+    :name       => 'ruby-fu-bilateral-luma-chroma',
+    :blurb      => 'Gmic selective bilateral smooth on LAB',
+    :help       => 'Gmic selective bilateral smooth on LAB channels and recompose as a new layer',
+    :author     => 'xy',
+    :copyright  => 'xy',
+    :date       => '2013',
+    :menulabel  => 'bilateral Luma Chroma',
+    :imagetypes => '*',
+    :params     => [
+          ParamDef.TOGGLE('keep', 'keep intermediate LAB image ?', 0)	
+                  ],
+    :results    => []
+    
 ) do |run_mode, image, drawable, keep|
-	include PDB::Access
-	#gimp_message_set_handler(ERROR_CONSOLE)
-	
+    include PDB::Access
+    #gimp_message_set_handler(ERROR_CONSOLE)
+    
     Context.push do
         image.undo_group_start do
             
@@ -54,7 +53,7 @@ RubyFu.register(
                 PDB.call_interactive("plug-in-gmic", lab_image, lyr)
             end
             
-            plug_in_recompose(lab_image, l_layer)
+            plug_in_recompose(lab_image, new_layer)
             new_layer.set_name("LAB bilateral")
             
             if keep.to_bool
@@ -63,13 +62,14 @@ RubyFu.register(
             else
                 lab_image.delete
             end
-                                                                       
-		end # undo_group
+            
+    end # undo_group
     end # Context
-	Display.flush
+    Display.flush
 end
 
 RubyFu.menu_register('ruby-fu-bilateral-luma-chroma', '<Image>/Fus/Ruby-Fu/')
+
 
 # sepia
 # b = 26; a = [45, 118, 32, 45, 57, 57, 32, 45, 103, 105, 109, 112, 95, 115, 101, 112, 105, 97, 32, 49, 44, 49, 44, 48, 44, 48]

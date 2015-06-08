@@ -150,7 +150,7 @@ RubyFu.register(
   ]
   
   values = PDB.ruby_fu_test_echo(*args)
-	
+  
   if args == values
     Gimp.message "Success!"
   else
@@ -339,7 +339,7 @@ RubyFu.register(
         RubyFu::ParamDef.COLOR("color", "COLOR", Gimp::Rgb.new(1.0, 0.0, 0.0, 0.0)),
         RubyFu::ParamDef.ENUM("enum", "ENUM", 0, "GimpBlendMode")
     ],
-	:results     => []
+    :results     => []
 ) do|run_mode, *params|
   Gimp.message(params.join("\n"))
 end
@@ -370,7 +370,7 @@ RubyFu.register(
         RubyFu::ParamDef.PATTERN("pattern", "PATTERN", "Pine"),
         RubyFu::ParamDef.BRUSH("brush", "BRUSH", "Circle (11)"),
     ], 
-	:results     => []
+    :results     => []
 ) do|run_mode, *params|
   Gimp.message(params.join("\n"))
 end

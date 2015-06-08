@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby
-$KCODE='U'
+#!ruby
 
 require 'rubyfu'
 
@@ -7,24 +6,23 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-decompose_bws',
-	  :blurb      => 'some Black and Whites',
-	  :help       => 'some Black and Whites',
-	  :author     => 'xy',
-	  :copyright  => 'xy',
-	  :date       => '2013',
-	  :menulabel   => 'decompose choices',
-	  :imagetypes => '*',
-	  :params     => [],
-	  :results    => []
-
+    :name       => 'ruby-fu-decompose_bws',
+    :blurb      => 'some Black and Whites',
+    :help       => 'some Black and Whites',
+    :author     => 'xy',
+    :copyright  => 'xy',
+    :date       => '2013',
+    :menulabel   => 'decompose choices',
+    :imagetypes => '*',
+    :params     => [],
+    :results    => []
+    
 ) do |run_mode, image, drawable|
-	include PDB::Access
-	
-	
+    include PDB::Access
+    
     Context.push do
         image.undo_group_start do
-			
+            
             image_copy = image.duplicate
             drw_copy = image_copy.layersOO[0]
             
@@ -72,12 +70,11 @@ RubyFu.register(
             Image.list.last[0...-2].each { |i| gimp_image_delete(i) }
             image_copy.remove_layer(drw_copy)
             
-			Display.new(image_copy)
-			
-		end # undo_group
+            Display.new(image_copy)
+            
+        end # undo_group
     end # Context
-	
+    
 end
 
 RubyFu.menu_register('ruby-fu-decompose_bws', '<Image>/Fus/Ruby-Fu/')
-

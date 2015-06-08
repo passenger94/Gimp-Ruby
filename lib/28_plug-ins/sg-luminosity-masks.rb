@@ -6,27 +6,27 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-	  :name       => 'ruby-fu-sg-luminosity-masks',
-	  :blurb      => '...',
-	  :help       => '......',
-	  :author     => 'saul goode',
-	  :copyright  => 'saul goode',
-	  :date       => '2014',
-	  :menulabel   => 'sg-luminosity-masks',
-	  :imagetypes => '*',
-	  :params     => [],
-	  :results    => []
-
+    :name       => 'ruby-fu-sg-luminosity-masks',
+    :blurb      => '...',
+    :help       => '......',
+    :author     => 'saul goode',
+    :copyright  => 'saul goode',
+    :date       => '2014',
+    :menulabel  => 'sg-luminosity-masks',
+    :imagetypes => '*',
+    :params     => [],
+    :results    => []
+    
 ) do |run_mode, image, drawable|
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)
-	
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)
+    
     Context.push do
         image.undo_group_start do
-			
-			orig_sel = gimp_selection_save(image)
-            L = gimp_selection_save(image)
-            gimp_selection_none(image)
+            
+            orig_sel = gimp_selection_save(image)
+            L = Selection.save(image)
+            Selection.none(image)
             masks = [L]
             
             name = drawable.get_name
@@ -87,8 +87,8 @@ RubyFu.register(
             masks << MMM
             
             image.select_item(CHANNEL_OP_REPLACE, orig_sel)
-            if gimp_selection_is_empty(image) == TRUE or gimp_drawable_mask_intersect(drawable) == FALSE
-                gimp_selection_all(image)
+            if Selection.empty?(image) or drawable.mask_intersect == FALSE
+                Selection.all(image)
             end
             
             Context.set_feather false
@@ -98,25 +98,25 @@ RubyFu.register(
                                     drawable.width,
                                     drawable.height )
             
-            gimp_selection_invert(image)
-            if gimp_selection_is_empty(image) == FALSE
-                masks.map {|x| Edit.fill(x, WHITE_FILL); gimp_invert(x) }
+            Selection.invert(image)
+            unless Selection.empty?(image)
+                masks.map {|x| Edit.fill(x, FILL_WHITE); gimp_invert(x) }
             end
             
             image.select_item(CHANNEL_OP_REPLACE, orig_sel)
             image.remove_channel(orig_sel)
             
-            if drawable.is_channel == TRUE
+            if drawable.channel?
                 image.set_active_layer(drawable)
-                if drawable.is_layer_mask == TRUE
+                if drawable.layer_mask?
                     image.set_active_channel(drawable)
                     image.set_active_layer(gimp_layer_from_mask(drawable))
                 end
             end
             
-		end # undo_group
+        end # undo_group
     end # Context
-	Display.flush
+    Display.flush
 end
 
 RubyFu.menu_register('ruby-fu-sg-luminosity-masks', '<Image>/Fus/Ruby-Fu/')

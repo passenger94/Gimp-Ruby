@@ -128,8 +128,8 @@ def exposure_blend_mask(img, activeLayer, type, blur_rad, blur_thresh, regen)
     
     # Do we have a layer mask already in place?
     mask = activeLayer.get_mask
-	mask = activeLayer.addMask(ADD_WHITE_MASK) if mask.to_int == -1
-	
+    mask = activeLayer.addMask(ADD_WHITE_MASK) if mask.to_int == -1
+    
     # Check for cached mask
     if channel.nil? or regen
         # We must create and store a new channel from the source layer
@@ -142,7 +142,7 @@ def exposure_blend_mask(img, activeLayer, type, blur_rad, blur_thresh, regen)
         # Copy the layer to a channel and mark with tattoo ID
         channel.set_visible(false)
         channel.set_tattoo(target_tattoo)
-        img.add_channel(channel, -1)
+        img.insert_channel(channel, nil, -1)
         exposure_blend_copy(source_layer, channel)
         
         # Blur the channel image
@@ -156,14 +156,14 @@ def exposure_blend_mask(img, activeLayer, type, blur_rad, blur_thresh, regen)
         ebMessage = "#{ebMessage}  #{gimp_item_get_name(channel)}\n"
     end
     
-	# Copy the channel's data over
-	exposure_blend_copy(channel, mask, false)
+    # Copy the channel's data over
+    exposure_blend_copy(channel, mask, false)
     mask
 end
 
 
 def exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, mask_bright,
-					    dark_precedence, auto_trim, regen)
+                        dark_precedence, auto_trim, regen)
     
     dark_mask_type = DarkMasks[mask_dark]
     bright_mask_type = BrightMasks[mask_bright]
@@ -179,7 +179,7 @@ def exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, mask_bright,
         if (dark or bright)
             #  Ensure appropriate layer is on top
             if (dark and dark_precedence) or (bright and !dark_precedence)
-                img.raise_layer_to_top(ly)
+                img.raise_item_to_top(ly)
                 img.set_active_layer(ly)
             end
             
@@ -198,13 +198,13 @@ def exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, mask_bright,
 end              
 
 RubyFu.register(
-  :name       => "ruby-fu-exposure_blend_xy",
+  :name       => "ruby-fu-exposure_blend",
   :blurb      => "exposures blending",
   :help       => "exposures blending",
   :author     => "J.D. Smith/xy",
   :copyright  => "J.D. Smith/xy",
   :date       => "june 2013",
-  :menulabel   => "Exposures Blend ...",
+  :menulabel  => "Exposures Blend ...",
   :imagetypes => nil,
   :params     => [
         ParamDef.FILE("img_f", "Normal Exposure", "normal.png"),
@@ -216,23 +216,23 @@ RubyFu.register(
         ParamDef.LIST("mask_dark", "Dark Mask Grayscale", ["Dark", "Normal", "Bright"]),
         ParamDef.LIST("mask_bright", "Bright Mask Grayscale", ["Bright (inverted)",
                                                "Normal (inverted)", "Dark (inverted)"]),
-        ParamDef.TOGGLE("dark_precedence", "Dark Takes Precedence", 0),
+        ParamDef.TOGGLE("dark_precedence", "Highligths on top of Shadows", 0),
         ParamDef.TOGGLE("auto_trim", "Auto-Trim Mask Histograms", 0),
         #ParamDef.STRING("scale_image", "Scale Largest Image Dimension to", "")
-  ],
-  :results => [ParamDef.IMAGE('image', 'Image')] 
+    ],
+    :results => [ParamDef.IMAGE('image', 'Image')] 
 
 ) do |run_mode, img_f, img_dark_f, img_bright_f, same_file, blur_rad, blur_thresh, mask_dark,
                             mask_bright, dark_precedence, auto_trim|#, scale_image|              
-	include PDB::Access
-	gimp_message_set_handler(ERROR_CONSOLE)
-	
-	# Gimp to ruby
-	blur_thresh = BlurTypes.index(blur_thresh)
-	dark_precedence = dark_precedence.to_bool
-	auto_trim = auto_trim.to_bool
-	same_file = same_file.to_bool
-	
+    include PDB::Access
+    gimp_message_set_handler(ERROR_CONSOLE)
+    
+    # Gimp to ruby
+    blur_thresh = BlurTypes.index(blur_thresh)
+    dark_precedence = dark_precedence.to_bool
+    auto_trim = auto_trim.to_bool
+    same_file = same_file.to_bool
+    
     if same_file
         img = gimp_file_load(img_f, img_f)
         # bug? in "gimp_file_load" --> no history avalaible, this at least get rid of the warning dialog
@@ -252,42 +252,42 @@ RubyFu.register(
     
     Context.push do
         img.undo_group_start do
-			layer_bright = img.addLayer_from_drawable(img_bright.layersID.first, -1)
-			layer_dark = img.addLayer_from_drawable(img_dark.layersID.first, dark_precedence ? 1 : -1)
-		    
-		    #layer.set_name("Normal Exp: #{img_f.split("/").last}")
-		    layer.set_name("#{img_f.split("/").last}")
-		    layer.set_tattoo(EXP_NORMAL)
-		    
-		    #layer_bright.set_name("Bright Exp: #{img_bright_f.split("/").last}")
-		    layer_bright.set_name("Shadows")
-		    layer_bright.set_tattoo(EXP_BRIGHT)
-		    layer_bright.add_alpha
-		    layer_bright.set_opacity(80)
-		    layer_bright.set_mode(SCREEN_MODE)
-		    
-		    #layer_dark.set_name("Dark Exp: #{img_dark_f.split("/").last}")
-		    layer_dark.set_name("Highlights")
-		    layer_dark.set_tattoo(EXP_DARK)
-		    layer_dark.add_alpha
-		    layer_dark.set_opacity(80)
-		    layer_dark.set_mode(MULTIPLY_MODE)
-		    
-		    [img_dark, img_bright].each {|i| gimp_image_delete(i)} unless same_file
-		    
-		    ## Scale layers
-		    
-		    
-		    exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, 
-		                        mask_bright, dark_precedence, auto_trim, false)
-		    
-		    Display.new(img)
-		end # undo_group
-	end # Context
-    	
+            layer_bright = img.addLayer_from_drawable(img_bright.layersID.first, -1)
+            layer_dark = img.addLayer_from_drawable(img_dark.layersID.first, dark_precedence ? 1 : -1)
+            
+            #layer.set_name("Normal Exp: #{img_f.split("/").last}")
+            layer.set_name("#{img_f.split("/").last}")
+            layer.set_tattoo(EXP_NORMAL)
+            
+            #layer_bright.set_name("Bright Exp: #{img_bright_f.split("/").last}")
+            layer_bright.set_name("Shadows")
+            layer_bright.set_tattoo(EXP_BRIGHT)
+            layer_bright.add_alpha
+            layer_bright.set_opacity(80)
+            layer_bright.set_mode(SCREEN_MODE)
+            
+            #layer_dark.set_name("Dark Exp: #{img_dark_f.split("/").last}")
+            layer_dark.set_name("Highlights")
+            layer_dark.set_tattoo(EXP_DARK)
+            layer_dark.add_alpha
+            layer_dark.set_opacity(80)
+            layer_dark.set_mode(MULTIPLY_MODE)
+            
+            [img_dark, img_bright].each {|i| gimp_image_delete(i)} unless same_file
+            
+            ## Scale layers
+            # not implemented
+            
+            exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, 
+                                mask_bright, dark_precedence, auto_trim, false)
+            
+            Display.new(img)
+        end # undo_group
+    end # Context
+    
 end
 
-RubyFu.menu_register("ruby-fu-exposure_blend_xy", RubyFu::RubyFuToolbox)
+RubyFu.menu_register("ruby-fu-exposure_blend", RubyFu::RubyFuToolbox)
 
 
 
@@ -296,8 +296,8 @@ RubyFu.menu_register("ruby-fu-exposure_blend_xy", RubyFu::RubyFuToolbox)
 def exposure_blend_align(img, align_set)
     include PDB::Access
     
-	Context.push do
-		img.undo_group_start do
+    Context.push do
+        img.undo_group_start do
             
             img.layersOO.each do |layer|
                 tattoo = layer.get_tattoo
@@ -332,9 +332,9 @@ def exposure_blend_align(img, align_set)
             end
             exposure_blend_link_channels(img, align_set)
             message("Select Move Tool. Use arrow keys for 1 pixel movements.") unless align_set == 'off'
-		end
-	end
-	Display.flush
+        end
+    end
+    Display.flush
 end
 
 def exposure_blend_link_channels(img, type)
@@ -351,8 +351,8 @@ def bit_mask(value, offset, mask)
 end
 
 def exposure_blend_decompose_tattoo(tattoo)
-   #im type
-   EXP_OFFSET + (bit_mask(tattoo, EXP_IM_TYPE_OFF, EXP_IM_TYPE_MASK))
+    #im type
+    EXP_OFFSET + (bit_mask(tattoo, EXP_IM_TYPE_OFF, EXP_IM_TYPE_MASK))
 ##   # blur_rad
 ##   bit_mask(tattoo, EXP_BLUR_RAD_OFF, EXP_BLUR_RAD_MASK),
 ##   # selective blur thresh
@@ -368,7 +368,7 @@ end
       :author     => "J.D. Smith/xy",
       :copyright  => "J.D. Smith/xy",
       :date       => "june 2013",
-      :menulabel   => alignvar,
+      :menulabel  => alignvar,
       :imagetypes => "*",
       :params     => [],
       :results    => []
@@ -385,39 +385,39 @@ end
 ### Crop Exposure layers
 ###
 RubyFu.register(
-      :name       => "ruby-fu-exposure-blend-crop-image",
-      :blurb      => "Trim image to combined layer overlap",
-      :help       => "Trim image to combined layer overlap",
-      :author     => "J.D. Smith/xy",
-      :copyright  => "J.D. Smith/xy",
-      :date       => "june 2013",
-      :menulabel   => "Trim Image to Overlap Area",
-      :imagetypes => "*",
-      :params     => [],
-      :results    => []
-
+    :name       => "ruby-fu-exposure-blend-crop-image",
+    :blurb      => "Trim image to combined layer overlap",
+    :help       => "Trim image to combined layer overlap",
+    :author     => "J.D. Smith/xy",
+    :copyright  => "J.D. Smith/xy",
+    :date       => "june 2013",
+    :menulabel  => "Trim Image to Overlap Area",
+    :imagetypes => "*",
+    :params     => [],
+    :results    => []
+    
 ) do |run_mode, img, drw|
     include PDB::Access
     
-	Context.push do
-		img.undo_group_start do
-		    x = y = xt = yt = x2 = y2 = nil
-		    img.layersOO.each do |layer|
-		        offs = layer.offsets
-		        x = !x.nil? ? [x, offs[0]].max : offs[0]
-		        y = !y.nil? ? [y, offs[1]].max : offs[1]
-		        xt = (layer.width + offs[0]) - 1
-		        yt = (layer.height + offs[1]) - 1
-		        x2 = !x2.nil? ? [x2, xt].min : xt
-		        y2 = !y2.nil? ? [y2, yt].min : yt
-		    end
-		    
+    Context.push do
+        img.undo_group_start do
+            x = y = xt = yt = x2 = y2 = nil
+            img.layersOO.each do |layer|
+                offs = layer.offsets
+                x = !x.nil? ? [x, offs[0]].max : offs[0]
+                y = !y.nil? ? [y, offs[1]].max : offs[1]
+                xt = (layer.width + offs[0]) - 1
+                yt = (layer.height + offs[1]) - 1
+                x2 = !x2.nil? ? [x2, xt].min : xt
+                y2 = !y2.nil? ? [y2, yt].min : yt
+            end
+            
             img.crop( (x2-x)+1, (y2-y)+1, x, y )
             message("Trimmed image to: #{(x2-x)+1} x #{(y2-y)+1} [#{x}, #{y}]")
-		        
-		end
-	end
-	Display.flush
+            
+        end
+    end
+    Display.flush
 end
 
 RubyFu.menu_register("ruby-fu-exposure-blend-crop-image", "<Image>/Filters/RubyFu Exposure Blend/")

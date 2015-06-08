@@ -43,21 +43,23 @@ class MakeLinux
         
         def copy_plugins
             copy_shoes_plugins if SHOES
-            cp_r Dir.glob("lib/plug-ins/*") - Dir.glob("lib/plug-ins/*shoes*"), "#{USERDIR}/plug-ins"
+            plugindir = PREFIX ? "plug-ins" : "28_plug-ins"
+            cp_r Dir.glob("lib/#{plugindir}/*") - Dir.glob("lib/#{plugindir}/*shoes*"), "#{USERDIR}/plug-ins"
         end
         
         def copy_shoes_plugins
-            open("lib/plug-ins/shoesfu.rb", 'r') do |f|
-                open("lib/plug-ins/shoesfu.tmp.rb", 'w') do |f2|
+            plugindir = PREFIX ? "plug-ins" : "28_plug-ins"
+            open("lib/#{plugindir}/shoesfu.rb", 'r') do |f|
+                open("lib/#{plugindir}/shoesfu.tmp.rb", 'w') do |f2|
                     f.each_line do |line|
                         line = "SHOES = '#{SHOES}'\n" if line=~ /SHOES\s?=\s?/
                         f2.write line
                     end
                 end
             end
-            mv "lib/plug-ins/shoesfu.tmp.rb", "#{USERDIR}/plug-ins/shoesfu.rb"
+            mv "lib/#{plugindir}/shoesfu.tmp.rb", "#{USERDIR}/plug-ins/shoesfu.rb"
             
-            cp_r Dir.glob("lib/plug-ins/*shoes*")- ["lib/plug-ins/shoesfu.rb"], "#{USERDIR}/plug-ins"
+            cp_r Dir.glob("lib/#{plugindir}/*shoes*")- ["lib/#{plugindir}/shoesfu.rb"], "#{USERDIR}/plug-ins"
         end
         
         def copy_env_interp

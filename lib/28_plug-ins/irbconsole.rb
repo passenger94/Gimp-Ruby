@@ -19,50 +19,67 @@
 # 02110-1301, USA.
 
 require "rubyfu"
+require "irb"
+    
+module IRB
+    class  RGconsoleInputMethod < StdioInputMethod
+        def initialize(io)
+          super()
+          # pfeww ! IRB map @stdin to STDIN by default !
+          @stdin = IO.open(io.to_i, :external_encoding => IRB.conf[:LC_MESSAGES].encoding, :internal_encoding => "-")
+          #@stdout = IO.open($stdout.to_i, 'w', :external_encoding => IRB.conf[:LC_MESSAGES].encoding, :internal_encoding => "-")
+          @stdout = IO.open(STDOUT.to_i, 'w', :external_encoding => IRB.conf[:LC_MESSAGES].encoding, :internal_encoding => "-")
+        end
+    end
+    
+    def self.start_session(io = nil)
+        puts _("###              Irb on Ruby-#{RUBY_VERSION}")
+        require 'imageDrawable4console.rb'
+        $stdout.flush
+        
+        ARGV.clear
+        IRB.setup(nil)
+        
+        irb = Irb.new(nil, io.nil? ? IRB::StdioInputMethod.new : RGconsoleInputMethod.new(io))
+        
+        @CONF[:IRB_RC].call(irb.context) if @CONF[:IRB_RC]
+        @CONF[:MAIN_CONTEXT] = irb.context
+        
+        trap("SIGINT") do
+            irb.signal_handle
+        end
+        
+        catch(:IRB_EXIT) do
+            irb.eval_input
+        end
+    end
+end
+
 
 RubyFu.register(
-  :name      => "ruby-fu-console",
+    :name      => "ruby-fu-console",
     :blurb     => _("Image, Starts an irb session in a console."),
     :help      => _("Image, Starts an irb session in a console."),
-  :author    => "Scott Lembcke/xy",
-  :copyright => "Scott Lembcke/xy",
+    :author    => "Scott Lembcke/xy",
+    :copyright => "Scott Lembcke/xy",
     :date      => "2015",
-    :menulabel  => _("Ruby Console - Image")
+    :menulabel => _("Ruby Console - Image")
 ) do |run_mode|
-
-  require "irb"
-  
-    module IRB
-        def self.start_session
-            puts _("***     Irb on Ruby #{RUBY_VERSION}")
-            require 'imageDrawable4console.rb'
-
-  ARGV.clear
-  IRB.setup(nil)
-  
-            irb = Irb.new(nil, IRB::StdioInputMethod.new)
-
-            @CONF[:IRB_RC].call(irb.context) if @CONF[:IRB_RC]
-            @CONF[:MAIN_CONTEXT] = irb.context
-
-            trap("SIGINT") do
-                irb.signal_handle
-            end
-            
-  catch(:IRB_EXIT) do
-    irb.eval_input
-  end
-end
-    end
-
+    
     include Gimp
     include PDB::Access
     
-    console = File.join(GIMP_DIRECTORY, "ruby", "ruby-fu-console")
-    # !!? why STDIN ??
-    $stdout = STDIN = IO.popen(["#{console}", :err=>:out], "w+") 
+###  GTK+ console    
+#    console = File.join(GIMP_DIRECTORY, "ruby", "ruby-fu-console")
+#    $stdout = io = IO.popen(["#{console}", :err=>:out], "w+") 
     
-    IRB.start_session
+###  Shoes console    
+    require File.expand_path("shoesfu.rb", File.dirname(__FILE__))
+    console = File.join(GIMP_DIRECTORY, "plug-ins/shoes_console.rb")
+    $stdout = io = IO.popen([ShoesFu::SHOES, console, :err=>:out], "w+")
+    
+    
+    IRB.start_session(io)
     
 end
 

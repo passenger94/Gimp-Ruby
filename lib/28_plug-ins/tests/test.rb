@@ -29,7 +29,7 @@ RubyFu.register(
     :author     => nil,             
     :copyright  => nil,             
     :date       => nil,             
-    :menulabel   => nil,             
+    :menulabel  => nil,             
     :imagetypes => nil,             
     :params     => nil,             
     :results    => nil,             
@@ -150,7 +150,7 @@ RubyFu.register(
   ]
   
   values = PDB.ruby_fu_test_echo(*args)
-	
+  
   if args == values
     Gimp.message "Success!"
   else
@@ -170,7 +170,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Shelf",
+    :menulabel  => "Shelf",
     :imagetypes => nil,
     :params     => [],
     :results    => []
@@ -206,7 +206,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => nil,
+    :menulabel  => nil,
     :imagetypes => nil,
     :params     => [], 
     :results    => []
@@ -233,7 +233,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Call Errors",
+    :menulabel  => "Call Errors",
     :imagetypes => nil,
     :params     => [],
     :results    => []
@@ -324,7 +324,7 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Dialog",
+    :menulabel  => "Dialog",
     :imagetypes => nil,
     :params     => [
         RubyFu::ParamDef.INT32("int32", "INT32", 32),
@@ -339,7 +339,7 @@ RubyFu.register(
         RubyFu::ParamDef.COLOR("color", "COLOR", Gimp::Rgb.new(1.0, 0.0, 0.0, 0.0)),
         RubyFu::ParamDef.ENUM("enum", "ENUM", 0, "GimpBlendMode")
     ],
-	:results     => []
+    :results     => []
 ) do|run_mode, *params|
   Gimp.message(params.join("\n"))
 end
@@ -370,7 +370,7 @@ RubyFu.register(
         RubyFu::ParamDef.PATTERN("pattern", "PATTERN", "Pine"),
         RubyFu::ParamDef.BRUSH("brush", "BRUSH", "Circle (11)"),
     ], 
-	:results     => []
+    :results     => []
 ) do|run_mode, *params|
   Gimp.message(params.join("\n"))
 end
