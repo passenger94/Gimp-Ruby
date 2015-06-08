@@ -33,7 +33,8 @@
 
 #include <libintl.h>
 /* including "config.h" would include Ruby's config.h */
-#include "../config.h"
+//#include "../config.h"
+#define GETTEXT_PACKAGE "gimp-ruby"
 
 #include "rbgimp.h"
 
