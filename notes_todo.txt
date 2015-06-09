@@ -52,6 +52,15 @@ because they returned NULL values (some return values are explicitely missing be
 Do we need cheks on other GimpParamData union members ? (see gimp.h)
 
 
+This will tell git you want to start ignoring the changes to the file
+git update-index --assume-unchanged app.yaml
+
+When you want to start keeping track again
+git update-index --no-assume-unchanged app.yaml
+
+
+
+
 
 
 
