@@ -82,7 +82,7 @@ EXP_DARK = EXP_OFFSET + 1
 EXP_BRIGHT = EXP_OFFSET +  2
 
 
-ebMessage = ""
+eb_message = ""
 BlurTypes = ["Gaussian/None", "Selective/Low", "Selective/Medium", "Selective/High"]
 BrightMasks = { "Bright (inverted)" => EXP_BRIGHT, 
                 "Normal (inverted)" => EXP_NORMAL, 
@@ -124,7 +124,7 @@ def exposure_blend_mask(img, activeLayer, type, blur_rad, blur_thresh, regen)
     
     target_tattoo = exposure_blend_compose_tattoo(type, blur_rad, blur_thresh)
     source_layer = img.get_layer_by_tattoo(type)
-    channel = *img.channelsOO.select {|ch| ch.get_tattoo == target_tattoo}
+    channel, = img.channelsOO.select {|ch| ch.get_tattoo == target_tattoo}
     
     # Do we have a layer mask already in place?
     mask = activeLayer.get_mask
@@ -153,7 +153,7 @@ def exposure_blend_mask(img, activeLayer, type, blur_rad, blur_thresh, regen)
         end
         
     else # It's cached.
-        ebMessage = "#{ebMessage}  #{gimp_item_get_name(channel)}\n"
+        eb_message = "#{eb_message}  #{gimp_item_get_name(channel)}\n"
     end
     
     # Copy the channel's data over
@@ -169,7 +169,7 @@ def exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, mask_bright,
     bright_mask_type = BrightMasks[mask_bright]
     # ...
     
-    ebMessage = ""
+    eb_message = ""
     
     img.layersOO.each do |ly|
         tattoo = ly.get_tattoo
@@ -194,7 +194,7 @@ def exposure_blend_set_masks(img, blur_rad, blur_thresh, mask_dark, mask_bright,
            gimp_invert(mask) if bright
         end
     end
-    message "Reused saved masks:\n#{ebMessage}" unless ebMessage.empty?
+    message "Reused saved masks:\n#{eb_message}" unless eb_message.empty?
 end              
 
 RubyFu.register(
