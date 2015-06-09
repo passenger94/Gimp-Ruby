@@ -6,16 +6,16 @@ include Gimp
 include RubyFu
 
 register(
-    :name       => "ruby-fu-smartSharpen_xy", #procedure name
-    :blurb      => "Smart Edge sharpening", #blurb
-    :help       => "Smart Edge sharpening", #help
-    :author     => "xy", #author
-    :copyright  => "xy", #copyright
-    :date       => "2008", #date
-    :menulabel  => "xy_smartSharpen", #menulabel
-    :imagetypes => "RGB*", #image types
-    :params     => [], #params
-    :results    => [] #results
+    :name       => "ruby-fu-smartSharpen_xy",
+    :blurb      => "Smart Edge sharpening",
+    :help       => "Smart Edge sharpening",
+    :author     => "xy",
+    :copyright  => "xy",
+    :date       => "2008",
+    :menulabel  => "xy_smartSharpen",
+    :imagetypes => "RGB*",
+    :params     => [],
+    :results    => []
     
 ) do |run_mode, image, drawable|
     include PDB::Access
