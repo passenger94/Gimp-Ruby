@@ -48,7 +48,7 @@ void register_enums(void)
       /* Iterate over the enums */
       for (value = enum_class->values; value->value_name; value++)
         {
-          gchar *name;
+          const gchar *name;
           volatile VALUE rbname;
           VALUE num;
           

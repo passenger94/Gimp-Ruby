@@ -215,14 +215,17 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
                 @listing = stack margin: 5, height: self.height-30, scroll: true do
                     background rgb(250,252,250)
                     para span(@procs.join("\n"))
-                end.start {|slf| slf.contents[0].height = slf.scroll_height}
+                    
+                    start { |slf| bkg.height = slf.scroll_height }
+                end
+                
+                start { @search.focus }
             end
             
             @display = stack width: 1.0, margin: [315,15,10,5] do
                 para "search for procedures by typing into the edit line"
             end
             
-            timer(1) { @search.focus }
         end
     end
     
@@ -294,7 +297,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
     end
     
     
-    timer(0.5) { @entry.focus; get_input }
+    start { @entry.focus; get_input }
     
     
 end

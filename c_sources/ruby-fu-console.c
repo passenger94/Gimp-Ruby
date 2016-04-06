@@ -167,7 +167,7 @@ key_function (GtkWidget   *widget,
       GtkTextIter iter;
       
       gchar *str = g_strdup_printf("%s\n", gtk_entry_get_text(entry));
-      g_print(str);
+      g_print("%s", str);
       
       gtk_text_buffer_get_end_iter(textBuffer, &iter);
       gtk_text_buffer_insert_with_tags_by_name(textBuffer, &iter, str, -1,
