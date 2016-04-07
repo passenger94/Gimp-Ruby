@@ -7,7 +7,8 @@ class CustomButton < Shoes::Widget
         w_height = options[:w_height] ||= 25
         marg_b = options[:marg_b] ||= 30
         
-        # bug in margins ! workaround : margin_bottom: marg_b and height: marg_b+25
+        # bug in margins or effect of internal margins on slot ?! 
+        # workaround : margin_bottom: marg_b and height: marg_b+25
         # if desired height is 25 (background height set to 25 accordingly)
         style(height: marg_b+w_height, width: w_width, margin: [15,0,15,marg_b])
         
@@ -16,14 +17,13 @@ class CustomButton < Shoes::Widget
         
         background back, curve: 5, height: w_height
         lbl = para label, stroke: fore, margin: [15,3,0,0], size: 12
-        brd = border yellow, curve: 5, hidden: true, height: w_height, strokewidth: 4
+        brd = border darkorange, curve: 5, hidden: true, height: w_height, strokewidth: 4
         
         @block = block
         click {
             brd.show
-            # stop after 50 milliseconds   # timer(0.05) { brd.hide } not good enough
-#            @an = animate(100) { |fr| (@an.stop; brd.hide; @an.remove; @an == nil) if fr == 5 }
-            mini_timer(5) { brd.hide }
+            # async stop after 0.1 second   # timer(0.1) { brd.hide } not good enough
+            mini_timer(10) { brd.hide }
             @block.call
         }
         
@@ -32,11 +32,11 @@ class CustomButton < Shoes::Widget
     end
     
     def mini_timer(timeout)
-        @anim = animate(100) do |frame|
+        anim = animate(100) do |frame|
             if frame = timeout
-                @anim.stop
+                anim.stop
                 yield
-                @anim.remove; @anim = nil
+                anim.remove; anim = nil
             end
         end
     end
@@ -223,7 +223,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
                     @listing.contents[0].height = @listing.scroll_height }
                 
                 @listing = stack margin: 5, height: self.height-30, scroll: true do
-                    background rgb(250,252,250)
+                    bkg = background rgb(250,252,250)
                     para span(@procs.join("\n"))
                     
                     start { |slf| bkg.height = slf.scroll_height }
