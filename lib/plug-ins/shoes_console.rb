@@ -30,7 +30,6 @@ class CustomButton < Shoes::Widget
         leave { lbl.style(stroke: fore) }
     end
     
-#   dbb = Shoes.APPS[1]; d = dbb.instance_variable_get :@display; f = d.contents[0]; f.contents;cb = f.contents[1]
 end
 
 
@@ -298,6 +297,6 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
     
     
     start { @entry.focus; get_input }
-    
+    finish { puts "exit"; STDOUT.flush }  # exit irb cleanly 
     
 end
