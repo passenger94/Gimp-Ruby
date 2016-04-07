@@ -8,7 +8,7 @@ The original Gimp-Ruby 0.1.3 is still available from the GNOME Git.
 
 Just because i love Gimp and Shoes and incidentally to learn a bit of coding
 
-Works/tested on ruby 2.1.5/2.2.1 (works probably from 1.9 to 2.xx) and Gimp 2.8.14 / 2.9.1 - Linux (Ubuntu).
+Works/tested on ruby 2.1.5/2.2.4 (works probably from 1.9 to 2.xx) and Gimp 2.8.14 / 2.9.1 - Linux (Ubuntu).
 
 Can not mix with the 2 versions of gimp, API is different, nothing awful in plug-ins (scripts) code, though
 (lots of constants names have changed, like BACKGROUND_FILL to FILL_BACKGROUND for example)
