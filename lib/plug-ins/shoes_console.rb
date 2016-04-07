@@ -22,12 +22,23 @@ class CustomButton < Shoes::Widget
         click {
             brd.show
             # stop after 50 milliseconds   # timer(0.05) { brd.hide } not good enough
-            @an = animate(100) { |fr| (@an.stop; brd.hide; @an.remove; @an == nil) if fr == 5 }
+#            @an = animate(100) { |fr| (@an.stop; brd.hide; @an.remove; @an == nil) if fr == 5 }
+            mini_timer(5) { brd.hide }
             @block.call
         }
         
         hover { lbl.style(stroke: black) }
         leave { lbl.style(stroke: fore) }
+    end
+    
+    def mini_timer(timeout)
+        @anim = animate(100) do |frame|
+            if frame = timeout
+                @anim.stop
+                yield
+                @anim.remove; @anim = nil
+            end
+        end
     end
     
 end
