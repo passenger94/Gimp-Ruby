@@ -9,20 +9,20 @@ class CustomButton < Shoes::Widget
         
         # bug in margins ! workaround : margin_bottom: marg_b and height: marg_b+25
         # if desired height is 25 (background height set to 25 accordingly)
-        style(height: marg_b+w_height, margin_bottom: marg_b,
-              width: w_width, margin_left: 15, margin_right: 15, margin_top: 0)
+        style(height: marg_b+w_height, width: w_width, margin: [15,0,15,marg_b])
         
         back, fore = rgb(240,245,240), darkslategray
         back, fore = fore, back if options[:swap_colors]
         
         background back, curve: 5, height: w_height
         lbl = para label, stroke: fore, margin: [15,3,0,0], size: 12
-        bkg = background yellow, curve: 5, hidden: true, height: w_height
+        brd = border yellow, curve: 5, hidden: true, height: w_height, strokewidth: 4
         
         @block = block
         click {
-            bkg.show
-            Thread.new {sleep 0.05; bkg.hide}
+            brd.show
+            # stop after 50 milliseconds   # timer(0.05) { brd.hide } not good enough
+            @an = animate(100) { |fr| (@an.stop; brd.hide; @an.remove; @an == nil) if fr == 5 }
             @block.call
         }
         
