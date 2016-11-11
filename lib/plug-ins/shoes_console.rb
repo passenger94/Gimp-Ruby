@@ -44,7 +44,7 @@ class CustomButton < Shoes::Widget
 end
 
 
-Shoes.app title: "Shoes Irb <-> Gimp console", width:800, height: 600 do
+Shoes.app title: "Shoes Irb <-> Gimp console", width: 800, height: 600 do
     BUFFERSIZE = 1024
     #RE_IRBRETURN = /=>\s*\["?(.+)\]/ # with terminal
     RE_IRBRETURN = /\["?(.+)\]/       # without terminal

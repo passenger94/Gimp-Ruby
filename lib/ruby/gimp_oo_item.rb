@@ -21,9 +21,7 @@ require 'gimp_oo.rb'
 module Gimp
     blacklist = []
   
-    Item = GimpOO::ClassTemplate.template('gimp-item-', blacklist,
-                                           nil, []
-                                           )
+    Item = GimpOO::ClassTemplate.template('gimp-item-', blacklist, nil, [])
     
     class Item
         
@@ -35,39 +33,39 @@ module Gimp
         # PDB needed for cases we are not including "Access" into scripts
         # or when working in the internals of gimp-ruby
         def layer_mask?
-            PDB.gimp_item_is_layer_mask(self) == 1 ? true : false 
+            PDB.gimp_item_is_layer_mask(self) == 1 
         end
         
         def text_layer?
-            PDB.gimp_item_is_text_layer(self) == 1 ? true : false 
+            PDB.gimp_item_is_text_layer(self) == 1
         end
         
         def layer?
-            PDB.gimp_item_is_layer(self) == 1 ? true : false
+            PDB.gimp_item_is_layer(self) == 1
         end
         
         def channel?
-            PDB.gimp_item_is_channel(self) == 1 ? true : false
+            PDB.gimp_item_is_channel(self) == 1
         end
         
         def drawable?
-            PDB.gimp_item_is_drawable(self) == 1 ? true : false
+            PDB.gimp_item_is_drawable(self) == 1
         end
         
         def selection?
-            PDB.gimp_item_is_selection(self) == 1 ? true : false
+            PDB.gimp_item_is_selection(self) == 1
         end
         
         def vectors?
-            PDB.gimp_item_is_vectors(self) == 1 ? true : false
+            PDB.gimp_item_is_vectors(self) == 1
         end
         
         def valid?
-            PDB.gimp_item_is_valid(self) == 1 ? true : false
+            PDB.gimp_item_is_valid(self) == 1
         end
         
         def group?
-	        PDB.gimp_item_is_group(self) == 1 ? true : false
+	        PDB.gimp_item_is_group(self) == 1
 	    end
     end
 end
