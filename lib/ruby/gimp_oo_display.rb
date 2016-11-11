@@ -19,13 +19,12 @@
 require 'gimp_oo.rb'
 
 module Gimp
-  Display = GimpOO::ClassTemplate.template('gimp-display-', [],
-                                           'gimp-displays-', [])
+  Display = GimpOO::ClassTemplate.template('gimp-display-', [], 'gimp-displays-', [])
   
   class Display
      
       def valid?
-          PDB.gimp_display_is_valid(self) == 1 ? true : false
+          PDB.gimp_display_is_valid(self) == 1
       end
   end
 end

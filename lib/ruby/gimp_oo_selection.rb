@@ -31,7 +31,7 @@ module Gimp
   module Selection
       
       def self.empty?(image)
-          PDB.gimp_selection_is_empty(image) == 1 ? true : false
+          PDB.gimp_selection_is_empty(image) == 1
       end
   end
 end

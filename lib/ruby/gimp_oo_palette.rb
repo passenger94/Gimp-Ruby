@@ -42,7 +42,7 @@ module Gimp
     class Palette
         # class methods even though it isn't prefixed with 'gimp-palettes'
         def self.editable?(name)
-            PDB.gimp_palette_is_editable(name) == 1 ? true : false
+            PDB.gimp_palette_is_editable(name) == 1
         end                                      
     end
 end

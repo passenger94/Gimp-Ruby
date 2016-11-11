@@ -20,7 +20,7 @@ require 'gimp_oo.rb'
 
 module Gimp
   blacklist = [
-    'bytes',              # deprecated for 'bpp'
+    'bytes',                # deprecated for 'bpp'
     'get_image',               # deprecated for Item equivalent methods
     'set_image',               #
     'get_name',                #
@@ -65,22 +65,20 @@ module Gimp
     'group?'            # comming from 'gimp-layer'
   ]
   
-  Drawable = GimpOO::ClassTemplate.template('gimp-drawable-', blacklist,
-                                            nil, [], 
-                                            Gimp::Item)
+  Drawable = GimpOO::ClassTemplate.template('gimp-drawable-', blacklist, nil, [], Gimp::Item)
   
     class Drawable
         
         def rgb?
-            PDB.gimp_drawable_is_rgb(self) == 1 ? true : false
+            PDB.gimp_drawable_is_rgb(self) == 1
         end
         
         def gray?
-            PDB.gimp_drawable_is_gray(self) == 1 ? true : false
+            PDB.gimp_drawable_is_gray(self) == 1
         end
         
         def indexed?
-            PDB.gimp_drawable_is_indexed(self) == 1 ? true : false
+            PDB.gimp_drawable_is_indexed(self) == 1
         end
                 
     end

@@ -36,9 +36,7 @@ module Gimp
         'text_layer?'
     ]
     
-    Layer = GimpOO::ClassTemplate.template('gimp-layer-', blacklist,
-                                            nil, [],
-                                            Gimp::Drawable)
+    Layer = GimpOO::ClassTemplate.template('gimp-layer-', blacklist,  nil, [], Gimp::Drawable)
     
     
     # There is no "text layer" Type in C 
@@ -86,7 +84,7 @@ module Gimp
         end
         
         def floating_sel?
-            PDB.gimp_layer_is_floating_sel(self) == 1 ? true : false
+            PDB.gimp_layer_is_floating_sel(self) == 1
         end
         
         def mergeDown(mergeType=CLIP_TO_IMAGE)

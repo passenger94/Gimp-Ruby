@@ -31,9 +31,9 @@ module Gimp
             yield
           ensure
             pop
-          end #begin
-        end #if
-      end #def
-    end #class
-  end #module
-end #module
+          end
+        end
+      end
+    end
+  end
+end

@@ -39,7 +39,5 @@ module Gimp
         'valid?'    # delegate to Item
     ]
     
-    Vectors = GimpOO::ClassTemplate.template('gimp-vectors-', blacklist,
-                                                nil, [], 
-                                                Gimp::Item)
+    Vectors = GimpOO::ClassTemplate.template('gimp-vectors-', blacklist, nil, [], Gimp::Item)
 end

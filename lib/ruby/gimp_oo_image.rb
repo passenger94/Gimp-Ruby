@@ -51,22 +51,21 @@ module Gimp
     'list',
   ]
   
-  Image = GimpOO::ClassTemplate.template('gimp-image-', blacklist,
-                                         nil, [])
+  Image = GimpOO::ClassTemplate.template('gimp-image-', blacklist, nil, [])
   
   class Image
     add_class_method('list', 'gimp-image-list')
     
     def dirty?
-        PDB.gimp_image_is_dirty(self) == 1 ? true : false
+        PDB.gimp_image_is_dirty(self) == 1
     end
     
     def valid?
-        PDB.gimp_image_is_valid(self) == 1 ? true : false
+        PDB.gimp_image_is_valid(self) == 1
     end
     
     def undo_enabled?
-        PDB.imp_image_undo_is_enabled(self) == 1 ? true : false
+        PDB.imp_image_undo_is_enabled(self) == 1
     end
     
     def selection_empty?
@@ -120,9 +119,9 @@ module Gimp
           yield
         ensure
           undo_group_end
-        end #begin
-      end #if
-    end #def
+        end
+      end
+    end
     
     alias_method :old_undo_disable, :undo_disable
     def undo_disable
@@ -133,7 +132,7 @@ module Gimp
         ensure
           undo_enable
         end
-      end #if
-    end #def
-  end #class
-end #module
+      end
+    end
+  end
+end

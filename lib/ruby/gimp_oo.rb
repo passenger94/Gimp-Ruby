@@ -102,7 +102,7 @@ module Gimp
     module ModuleTemplate
       def self.template(prefix, blacklist)
         mod = Module.new
-        ProcList.each_proc(prefix) do|method_name, proc_name|
+        ProcList.each_proc(prefix) do |method_name, proc_name|
           next if blacklist.include? method_name
           mod.module_eval """
             def self.#{method_name}(*args)
