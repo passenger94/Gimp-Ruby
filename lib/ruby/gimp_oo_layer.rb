@@ -36,25 +36,27 @@ module Gimp
         'text_layer?'
     ]
     
-    Layer = GimpOO::ClassTemplate.template('gimp-layer-', blacklist,  nil, [], Gimp::Drawable)
+    Layer = GimpOO::ClassTemplate.build('gimp-layer-', blacklist,  nil, [], Gimp::Drawable)
     
     
     # There is no "text layer" Type in C 
     # extending Layer with TextLayer module features 
     module TextLayer
+        
         def new(*var)
             PDB.gimp_text_layer_new(*var) 
         end
         module_function :new
         
         prefix = 'gimp-text-layer-'
+
         PDB['gimp-procedural-db-query'].call(prefix, *(['']*6))[1].each do |proc_name|
             method_name = proc_name[prefix.length..-1].gsub('-','_')
             
             next if ['new',         # clash with Layer.new, made avalaible as TextLayer.new
                      'resize',      # clash with Layer#resize, use gimp_text_layer_resize
-                    'get_hinting'   # deprecated for 'get_hint_style'
-                    # 'set_hinting' ?? not deprecated ?
+                     'get_hinting'  # deprecated for 'get_hint_style'
+                     # 'set_hinting' ?? not deprecated ?
             ].include? method_name
             
             self.module_eval """

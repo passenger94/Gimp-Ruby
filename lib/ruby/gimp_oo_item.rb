@@ -21,7 +21,7 @@ require 'gimp_oo.rb'
 module Gimp
     blacklist = []
   
-    Item = GimpOO::ClassTemplate.template('gimp-item-', blacklist, nil, [])
+    Item = GimpOO::ClassTemplate.build('gimp-item-', blacklist, nil, [])
     
     class Item
         

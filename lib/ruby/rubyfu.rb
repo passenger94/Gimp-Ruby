@@ -19,29 +19,25 @@
 require 'gimp.rb'
 
 module RubyFu
-  class CallError < Exception
-  end
+
+  class CallError < Exception; end
+  class ResultError < Exception; end
+  class Cancel < Exception; end
   
-  class ResultError < Exception
-  end
-  
-  class Cancel < Exception
-  end
-  
+
   class ParamDef < Gimp::ParamDef
     attr_reader :default, :subtype
     
     def self.method_missing(sym, *args)
-      nargs = args.length
-      if nargs == 3
+      if args.length == 3
         default = args.pop
         pdef = super(sym, *args)
         pdef.check(default)
         pdef.instance_variable_set(:@default, default)
         
-        return pdef
+        pdef
       else
-        return super
+        super
       end
     end
     
@@ -130,60 +126,54 @@ module RubyFu
     end
   end
 
+
   class Procedure
+    
     def initialize(*args, &func)
-      @name, *rem = *args
-      @blurb, @help, *rem = *rem
-      @author, @copyright, *rem = *rem
-      @date, *rem = *rem
+      @name, @blurb, @help, @author, @copyright, @date, menulabel, @imagetypes, @params, @results = *args
       
-      menulabel,*rem = *rem
       @menulabel = (menulabel.empty?) ? @name : menulabel
       @menupaths = []
-      
-      @imagetypes, *rem = *rem
-      @params, @results, *rem = *rem
             
       @function = func
     end
     
     def add_menupath(path)
-        type = 
-          case path
-          when /Toolbox/, /File\/Create/  then :toolbox
-          when /<Image>/  then :image
+      type = case path
+        when /Toolbox/, /File\/Create/  then :toolbox
+        when /<Image>/  then :image
 
-          # placing procedures in dockable Dialog/Tab
-          when /<Layers>/, /<Channels>/, /<Vectors>/, /<Colormap>/, /<Brushes>/, /<Dynamics>/, 
-            /<Gradients>/, /<Palettes>/, /<Patterns>/, /<ToolPresets>/, /<Fonts>/, 
-            /<Buffers>/ then :image
+        # placing procedures in dockable Dialog/Tab
+        when /<Layers>/, /<Channels>/, /<Vectors>/, /<Colormap>/, /<Brushes>/, /<Dynamics>/, 
+          /<Gradients>/, /<Palettes>/, /<Patterns>/, /<ToolPresets>/, /<Fonts>/, 
+          /<Buffers>/ then :image
 
-          # when working on an image, allows us to register a procedure without a menu
-          # to be used with a shortcut
-          when /<NoMenu>/ then :image
-          end
-        
-        if @type and @type != type
-          raise "Install locations don't match"
-        else
-          @type = type
-        end
-        
-        @menupaths << path unless path =~ /<NoMenu>/
+        # when working on an image, allows us to register a procedure without a menu
+        # to be used with a shortcut
+        when /<NoMenu>/ then :image
+      end
+      
+      if @type and @type != type
+        raise "Install locations don't match"
+      else
+        @type = type
+      end
+      
+      @menupaths << path unless path =~ /<NoMenu>/
     end
     
     def preparams
       case @type
-      when :toolbox
-        [Gimp::ParamDef.INT32('run-mode', 'Run mode')]
-      when :image
-        [
-          Gimp::ParamDef.INT32('run-mode', 'Run mode'),
-          Gimp::ParamDef.IMAGE('image', 'Input image'),
-          Gimp::ParamDef.DRAWABLE('drawable', 'Input drawable')
-        ]
-      else
-        []
+        when :toolbox
+          [Gimp::ParamDef.INT32('run-mode', 'Run mode')]
+        when :image
+          [
+            Gimp::ParamDef.INT32('run-mode', 'Run mode'),
+            Gimp::ParamDef.IMAGE('image', 'Input image'),
+            Gimp::ParamDef.DRAWABLE('drawable', 'Input drawable')
+          ]
+        else
+          []
       end
     end
     
@@ -206,13 +196,13 @@ module RubyFu
         (@results.empty? ? nil : @results)
       )
       
-      @menupaths.each do|menupath|
+      @menupaths.each do |menupath|
         PDB.gimp_plugin_menu_register(@name, menupath)
       end
     end
     
     def default_args
-      defArgs = @params.collect do|pdef|
+      defArgs = @params.collect do |pdef|
         pdef.default if pdef.respond_to? :default
       end
     end
@@ -230,38 +220,27 @@ module RubyFu
     def get_last_args
       args = Gimp::Shelf[@name + ':last_params']
       
-      if args
-        args
-      else
-        default_args
-      end
+      args ? args : default_args
     end
     
     def run_with_args(args)
       nargs = args.length
       nparams = fullparams.length
-      unless nargs == nparams
-        message = "Wrong number of arguments. (#{nargs} for #{nparams})"
-        raise(CallError, message)
-      end
+      raise(CallError, "Wrong number of arguments. (#{nargs} for #{nparams})") unless nargs == nparams
       
-      return @function.call(*args)
+      @function.call(*args)
     end
     
     def run(*args)
-      if @type
-        runMode = args[0].data
-      else
-        runMode = Gimp::RUN_NONINTERACTIVE
-      end
+      runMode = @type ? args[0].data : Gimp::RUN_NONINTERACTIVE
       
       extra_args = case runMode
-      when Gimp::RUN_INTERACTIVE    then get_interactive_args
-      when Gimp::RUN_WITH_LAST_VALS then get_last_args
-      else []
+        when Gimp::RUN_INTERACTIVE    then get_interactive_args
+        when Gimp::RUN_WITH_LAST_VALS then get_last_args
+        else []
       end
       
-      args = args.zip(fullparams).collect do|arg, param|
+      args = args.zip(fullparams).collect do |arg, param|
         raise(CallError, "Bad argument") unless arg.type == param.type
         next arg.transform
       end
@@ -281,26 +260,23 @@ module RubyFu
 
       nvalues = values.length
       nresults = @results.length
-      unless nvalues == nresults
-        message = "Wrong number of return values. (#{nvalues} for #{nresults})"
-        raise(ResultError, message)
-      end
+      raise(ResultError, "Wrong number of return values. (#{nvalues} for #{nresults})") unless nvalues == nresults
       
       begin
-        values = values.zip(@results).collect do|value, result|
+        values = values.zip(@results).collect do |value, result|
           value = ruby2int_filter(value)
           result.check(value)
           Gimp::Param.new(result.type, value)
         end
       rescue TypeError
-        message = "Procedure return value type check failed: #{$!.message}"
-        raise(TypeError, message)
+        raise(TypeError, "Procedure return value type check failed: #{$!.message}")
       end
       
-      return values
+      values
     end
   end
   
+
   @@procedures = {}
   @@menubranches = []
   
@@ -338,48 +314,39 @@ module RubyFu
     File.join(path, name)
   end
   module_function :menu_branch_register
+    
+  RubyFuMenu = '<Image>/Filters/Languages/Ruby-Fu'
+  RubyFuToolbox = '<Image>/Filters/Ruby-Fu_Toolbox'
+  ExamplesMenu = '<Image>/Filters/Languages/Ruby-Fu/Examples'
+
   
   def self.query
-    @@procedures.each_value{|proc| proc.query}
-    @@menubranches.each do|path, name|
+    @@procedures.each_value { |proc| proc.query }
+    @@menubranches.each do |path, name|
       PDB.gimp_plugin_menu_branch_register(path, name)
     end
   end
   
   def self.run(name, *args)
-    begin
-      proc = @@procedures[name]
-      
-      values = proc.run(*args)
+      values = @@procedures[name].run(*args)
       values.unshift Gimp::Param.STATUS(Gimp::PDB_SUCCESS)
-      return values
+      
     rescue CallError
       PDB.gimp_message("A calling error has occured: #$!.message")
-      return [Gimp::Param.STATUS(Gimp::PDB_CALLING_ERROR)]
+      [Gimp::Param.STATUS(Gimp::PDB_CALLING_ERROR)]
     rescue Cancel
-      return [Gimp::Param.STATUS(Gimp::PDB_CANCEL)]
+      [Gimp::Param.STATUS(Gimp::PDB_CANCEL)]
     rescue Exception
-      message = "A #{$!.class} has occured: #{$!.message}\n#{$@.join("\n")}"
-      PDB.gimp_message message
-      return [Gimp::Param.STATUS(Gimp::PDB_EXECUTION_ERROR)]
-    end
+      PDB.gimp_message "A #{$!.class} has occured: #{$!.message}\n#{$@.join("\n")}"
+      [Gimp::Param.STATUS(Gimp::PDB_EXECUTION_ERROR)]
   end
-  
-  PLUG_IN_INFO = Gimp::PlugInInfo.new(
-    nil,
-    nil,
-    method(:query),
-    method(:run)
-  )
   
   def self.main
-    Gimp.main(PLUG_IN_INFO)
+    Gimp.main( Gimp::PlugInInfo.new(nil, nil, method(:query), method(:run)) )
   end
-  
-  RubyFuMenu = '<Image>/Filters/Languages/Ruby-Fu'
-  RubyFuToolbox = '<Image>/Filters/Ruby-Fu_Toolbox'
-  ExamplesMenu = '<Image>/Filters/Languages/Ruby-Fu/Examples'
+
 end
+
 
 END {
   RubyFu.main

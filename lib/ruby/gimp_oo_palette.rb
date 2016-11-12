@@ -36,13 +36,12 @@ module Gimp
     'set_palette',
   ]
   
-  Palette = GimpOO::ClassTemplate.template('gimp-palette-', blacklist,
-                                           'gimp-palettes-', class_blacklist)
+  Palette = GimpOO::ClassTemplate.build('gimp-palette-', blacklist, 'gimp-palettes-', class_blacklist)
   
-    class Palette
-        # class methods even though it isn't prefixed with 'gimp-palettes'
-        def self.editable?(name)
-            PDB.gimp_palette_is_editable(name) == 1
-        end                                      
-    end
+  class Palette
+      # class methods even though it isn't prefixed with 'gimp-palettes'
+      def self.editable?(name)
+          PDB.gimp_palette_is_editable(name) == 1
+      end                                      
+  end
 end

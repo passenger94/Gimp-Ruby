@@ -27,16 +27,13 @@ end
 Integer.include G2RbBool 
 
 module PDB
-  class PDBException < RuntimeError
-  end
+  
+  class PDBException < RuntimeError; end
 
   class NoProcedure < PDBException
+    attr_reader :message
     def initialize(name)
-      @name = name
-    end
-    
-    def message
-      "'#@name' is not in the PDB"
+      @message = "#{name} is not in the PDB"
     end
   end
   
@@ -54,6 +51,7 @@ module PDB
     end
   end
   
+
   class Procedure
     attr_reader :name, :blurb, :help, :author, :copyright, :date
     attr_reader :proc_type, :args, :return_vals
@@ -71,48 +69,32 @@ module PDB
       values = Gimp.procedural_db_proc_info(name)
       raise(NoProcedure, name) unless values
       
-      @blurb = values.shift
-      @help = values.shift
-      @author = values.shift
-      @copyright = values.shift
-      @date = values.shift
-      @proc_type = values.shift
-      @args = values.shift
-      @return_vals = values.shift
+      @blurb, @help, @author, @copyright, @date, @proc_type, @args, @return_vals = *values
     end
     
     def convert_args(args)
-        arglen = args.length
-        prmlen = @args.length
-        unless arglen == prmlen
-            message = "Wrong number of parameters. #{arglen} for #{prmlen} expected"
-            raise(ArgumentError, message)
+      arglen = args.length
+      prmlen = @args.length
+      raise(ArgumentError, "Wrong number of parameters. #{arglen} for #{prmlen} expected") unless arglen == prmlen
+
+      begin
+        args.zip(@args).collect do |arr|
+          arg, paramdef = arr
+          arg = ruby2int_filter(arg)
+          paramdef.check(arg)
+          Gimp::Param.new(paramdef.type, arg)
         end
-        #puts "convert_args @args: #{@args.inspect}"
-        #puts args.zip(@args).inspect
-        begin
-            #result = args.zip(@args).collect do|arr|
-            args.zip(@args).collect do|arr|
-                arg, paramdef = arr
-                arg = ruby2int_filter(arg)
-                paramdef.check(arg)
-                Gimp::Param.new(paramdef.type, arg)
-            end
-        rescue TypeError
-            message = "Bad Argument: #{$!.message}"
-            raise(TypeError, message)
-        end
+      rescue TypeError
+        raise(TypeError, "Bad Argument: #{$!.message}")
+      end
     end
     
     def convert_return_values(values)
-      #puts "convert_return_values : #{values.inspect}"
       case values.shift.data
       when Gimp::PDB_CALLING_ERROR    then raise(CallingError, @name)
       when Gimp::PDB_EXECUTION_ERROR  then raise(ExecutionError, @name)
       end
       
-      #v2 = values
-      #puts "convert_return_values : #{v2.collect{|param| param.transform}.inspect} \n"
       values.collect{|param| param.transform}
     end
     
@@ -130,7 +112,7 @@ module PDB
       ## since ruby 1.9,  splat operator changed
       #return *convert_return_values(Gimp.run_procedure(@name, params))
       retvals = convert_return_values(Gimp.run_procedure(@name, params))
-      return retvals.size == 1 ? retvals[0] : retvals
+      retvals.size == 1 ? retvals[0] : retvals
     end
     
     def to_s
@@ -148,12 +130,13 @@ module PDB
     end
     
     def to_proc
-      lambda do|*args|
+      lambda do |*args|
         self.call(*args)
       end
     end
   end
   
+
   class << self
     attr_accessor :verbose
     @verbose = false
@@ -180,32 +163,31 @@ module PDB
         #since ruby 1.9,  splat operator changed
         #return *proc.convert_return_values(Gimp.run_procedure(name, args))
         retvals = proc.convert_return_values(Gimp.run_procedure(name, args))
-        return retvals.size == 1 ? retvals[0] : retvals
+        retvals.size == 1 ? retvals[0] : retvals
       else
         raise 'poop'
       end
     end
   end
   
+
   module Access
+    SKIP = [:to_hash, :to_str, :to_ary, :to_a, :to_io, :to_int]
+
     def method_missing(sym, *args)
-        skip = [:to_hash, :to_str, :to_ary, :to_a, :to_io, :to_int]
-        
-        begin
-            case args.size
-            when 0
-                # TODO ??
-                super if skip.include?(sym)
-                Procedure.new(sym.to_s.gsub('_', '-')).call
-            when 1
-                Procedure.new(sym.to_s.gsub('_', '-')).call(args[0])
-            else
-                Procedure.new(sym.to_s.gsub('_', '-')).call(*args)
-            end
-        rescue NoProcedure
-            warn $!.message
-            super
+        case args.size
+          when 0
+            # TODO ??
+            super if SKIP.include?(sym)
+            Procedure.new(sym.to_s.gsub('_', '-')).call
+          when 1
+            Procedure.new(sym.to_s.gsub('_', '-')).call(args[0])
+          else
+            Procedure.new(sym.to_s.gsub('_', '-')).call(*args)
         end
+      rescue NoProcedure
+        warn $!.message
+        super
     end
     module_function :method_missing
     

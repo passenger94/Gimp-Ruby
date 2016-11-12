@@ -32,5 +32,5 @@ module Gimp
     'set_spacing',
   ]
   
-  Brush = GimpOO::ClassTemplate.template('gimp-brush-', [], 'gimp-brushes-', class_blacklist)
+  Brush = GimpOO::ClassTemplate.build('gimp-brush-', [], 'gimp-brushes-', class_blacklist)
 end

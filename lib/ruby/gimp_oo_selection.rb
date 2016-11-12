@@ -26,7 +26,7 @@ module Gimp
     'load'           #
   ]
   
-  Selection = GimpOO::ModuleTemplate.template('gimp-selection-', blacklist)
+  Selection = GimpOO::ModuleTemplate.build('gimp-selection-', blacklist)
   
   module Selection
       

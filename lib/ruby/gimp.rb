@@ -39,6 +39,7 @@ def ruby2int_filter(value)
 end
 
 module Gimp
+  
   def message(*messages)
     messages.each do|message|
       PDB.gimp_message(message.to_s)
@@ -47,7 +48,9 @@ module Gimp
   
   module_function :message
   
+  
   module ParamTypes
+    
     CheckType = {
       :INT32 => :to_int,
       :INT16 => :to_int,
@@ -82,35 +85,29 @@ module Gimp
       check = CheckType[sym]
       
       good_type = case check
-      when Class  then data.is_a? check
-      when Symbol then data.respond_to? check
+        when Class  then data.is_a? check
+        when Symbol then data.respond_to? check
       end
-      
-      unless good_type
-        message = "#A #{sym} cannot be created from a #{data.class}"
-        raise(TypeError, message)
-      end
+      raise(TypeError, "#A #{sym} cannot be created from a #{data.class}") unless good_type
     end
     
     def self.check_method(sym, args, nargs)
       return false unless CheckType.member? sym
       
       arglen = args.length
-      unless arglen == nargs
-        message = "Wrong number of arguments. (#{arglen} for #{nargs})"
-        raise(ArgumentError, message)
-      end
+      raise(ArgumentError, "Wrong number of arguments. (#{arglen} for #{nargs})") unless arglen == nargs
       
       return true
     end
   end
   
+
   class ParamDef
+    
     def self.method_missing(sym, *args)
       super unless ParamTypes.check_method(sym, args, 2)
       
-      name, desc = *args
-      return new(Gimp.const_get("PDB_#{sym}".to_sym), name, desc)
+      return new(Gimp.const_get("PDB_#{sym}".to_sym), *args)
     end
     
     def check(value)
@@ -121,15 +118,14 @@ module Gimp
     end
   end
   
-  class Param    
+
+  class Param
+
     def self.method_missing(sym, *args)
       super unless ParamTypes.check_method(sym, args, 1)
       
-      # since ruby 1.9, splat operator changed
-      #data = *args
-      data = args.size == 1 ? args[0] : args
-      ParamTypes.check_type(sym, data)
-      return new(Gimp.const_get("PDB_#{sym}".to_sym), data)
+      ParamTypes.check_type(sym, args[0])
+      new(Gimp.const_get("PDB_#{sym}".to_sym), args[0])
     end
     
     def transform
@@ -167,7 +163,9 @@ module Gimp
     end
   end
   
+
   class Rgb
+    
     def marshal_dump
       [r, g, b, a]
     end
@@ -178,15 +176,7 @@ module Gimp
 
     def eql?(other)
       return false unless other.is_a? Rgb
-      
-      unless r == other.r
-             g == other.g
-             b == other.b
-             a == other.a
-        return false
-      end
-      
-      return true
+      r == other.r && g == other.g && b == other.b && a == other.a
     end
     
     alias_method :==, :eql?
@@ -196,6 +186,7 @@ module Gimp
     end
   end
   
+
   # no ned to take care of the splat operator here
   # we are calling a C function which happens to take care of the number of arguments
   # and expect 0,3 or 4 arguments (1 would be an array because of the splat)
@@ -204,7 +195,9 @@ module Gimp
   end
   module_function :Color
   
+
   module Shelf
+    
     def self.[](key)
       begin
         bytes, data = PDB.gimp_procedural_db_get_data(key)
@@ -216,11 +209,11 @@ module Gimp
     
     def self.[]=(key, obj)
       data = Marshal.dump(obj)
-      bytes = data.length
-      PDB.gimp_procedural_db_set_data(key, bytes, data)
+      PDB.gimp_procedural_db_set_data(key, data.length, data)
     end
   end
   
+
   autoload(:Layer,     'gimp_oo_layer.rb')
   autoload(:Drawable,  'gimp_oo_drawable.rb')
   autoload(:Channel,   'gimp_oo_channel.rb')

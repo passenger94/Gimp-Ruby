@@ -29,13 +29,12 @@ module Gimp
     'set_gradient',
   ]
   
-  Gradient = GimpOO::ClassTemplate.template('gimp-gradient-', [],
-                                            'gimp-gradients-', blacklist)
+  Gradient = GimpOO::ClassTemplate.build('gimp-gradient-', [], 'gimp-gradients-', blacklist)
   
     class Gradient
         # class methods even though it isn't prefixed with 'gimp-gradients'
         def self.editable?(name)
-            PDB.gimp_gradient_is_editable(name) == 1 ? true : false
+            PDB.gimp_gradient_is_editable(name) == 1
         end
     end
 end

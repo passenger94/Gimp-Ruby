@@ -65,7 +65,7 @@ module Gimp
     'group?'            # comming from 'gimp-layer'
   ]
   
-  Drawable = GimpOO::ClassTemplate.template('gimp-drawable-', blacklist, nil, [], Gimp::Item)
+  Drawable = GimpOO::ClassTemplate.build('gimp-drawable-', blacklist, nil, [], Gimp::Item)
   
     class Drawable
         

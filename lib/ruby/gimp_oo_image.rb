@@ -51,7 +51,7 @@ module Gimp
     'list',
   ]
   
-  Image = GimpOO::ClassTemplate.template('gimp-image-', blacklist, nil, [])
+  Image = GimpOO::ClassTemplate.build('gimp-image-', blacklist, nil, [])
   
   class Image
     add_class_method('list', 'gimp-image-list')
@@ -96,22 +96,23 @@ module Gimp
     def addLayer(width, height, type, name, opacity, mode, stack = -1)
         newlayer = Layer.new(self, width, height, type, name, opacity, mode)
         PDB.gimp_image_insert_layer(self, newlayer, nil, stack)
-        return newlayer
+        newlayer
     end
     
     def addLayer_from_drawable(drawable, stack = -1)
         newlayer = PDB.gimp_layer_new_from_drawable(drawable, self)
         self.insert_layer(newlayer, nil, stack)
-        return newlayer
+        newlayer
     end
     
     def addLayer_from_visible(dest_image, name, stack = -1)
         newlayer = Layer.new_from_visible(self, dest_image, name)
         PDB.gimp_image_insert_layer(self, newlayer, nil, stack)
-        return newlayer
+        newlayer
     end
     
     alias_method :old_undo_group_start, :undo_group_start
+
     def undo_group_start
       old_undo_group_start
       if block_given?
@@ -124,6 +125,7 @@ module Gimp
     end
     
     alias_method :old_undo_disable, :undo_disable
+
     def undo_disable
       old_undo_disable
       if block_given?

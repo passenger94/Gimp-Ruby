@@ -18,24 +18,25 @@
 
 module Gimp
   module GimpOO
+    
     module ProcList
+      
       module_function
+      
       def each_proc(prefix)
-        prefix_range = prefix.length..-1
-        get_proc_list(prefix).each do|proc_name|
-          method_name = proc_name[prefix_range].gsub('-','_')
-          yield(method_name, proc_name)
+        get_proc_list(prefix).each do |proc_name|
+          yield proc_name[prefix.length..-1].gsub('-','_'), proc_name
         end
       end
   
       def get_proc_list(prefix)
-        num, list = PDB['gimp-procedural-db-query'].call(prefix, *(['']*6))
-        return list
+        PDB['gimp-procedural-db-query'].call(prefix, *(['']*6))[1]
       end
     end
 
     class ClassTemplate
       class << self
+        
         def add_method(method_name, proc_name)
           class_eval """
             def #{method_name}(*args)
@@ -52,10 +53,9 @@ module Gimp
           """
         end
     
-        def add_methods(prefix, blacklist,
-                        class_prefix, class_blacklist)
+        def add_methods(prefix, blacklist, class_prefix, class_blacklist)
           
-          ProcList.each_proc(prefix) do|method_name, proc_name|
+          ProcList.each_proc(prefix) do |method_name, proc_name|
             next if blacklist.include? method_name
             
             if proc_name =~ /new/
@@ -66,23 +66,19 @@ module Gimp
           end
       
           if class_prefix
-            ProcList.each_proc(class_prefix) do|method_name, proc_name|
+            ProcList.each_proc(class_prefix) do |method_name, proc_name|
               next if class_blacklist.include? method_name
               add_class_method(method_name, proc_name)
             end
           end
         end
     
-        def template(prefix, blacklist,
-                     class_prefix, class_blacklist,
-                     super_class = self)
+        def build(prefix, blacklist, class_prefix, class_blacklist, super_class = self)
           klass = Class.new(super_class)
-          klass.add_methods(prefix, blacklist,
-                            class_prefix, class_blacklist)
-          
-          return klass
+          klass.add_methods(prefix, blacklist, class_prefix, class_blacklist)
+          klass
         end
-    
+
         alias_method :create, :new
       end
   
@@ -100,7 +96,8 @@ module Gimp
     end
 
     module ModuleTemplate
-      def self.template(prefix, blacklist)
+      
+      def self.build(prefix, blacklist)
         mod = Module.new
         ProcList.each_proc(prefix) do |method_name, proc_name|
           next if blacklist.include? method_name
@@ -111,8 +108,9 @@ module Gimp
           """
         end
     
-        return mod
-      end #def
-    end #module
-  end #module
-end #module
+        mod
+      end
+    end
+
+  end
+end

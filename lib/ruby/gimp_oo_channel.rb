@@ -31,7 +31,5 @@ module Gimp
     'ops_offset'        # deprecated for 'gimp_drawable_offset'
   ]
   
-  Channel = GimpOO::ClassTemplate.template('gimp-channel-', blacklist,
-                                           nil, [],
-                                           Gimp::Drawable)
+  Channel = GimpOO::ClassTemplate.build('gimp-channel-', blacklist, nil, [], Gimp::Drawable)
 end
