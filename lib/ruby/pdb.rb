@@ -60,13 +60,13 @@ module PDB
     
     def self.new(name)
       @@cache[name] = super unless @@cache.include? name
-      return @@cache[name]
+      @@cache[name]
     end
     
     def initialize(name)
       @name = name
       
-      values = Gimp.procedural_db_proc_info(name)
+      values = Gimp.pdb_proc_info(name)
       raise(NoProcedure, name) unless values
       
       @blurb, @help, @author, @copyright, @date, @proc_type, @args, @return_vals = *values

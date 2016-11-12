@@ -228,13 +228,13 @@ rb_gimp_procedural_db_get_data_size(VALUE  self,
 
 void Init_gimpproceduraldb(void)
 {
-  rb_define_module_function(mGimp, "procedural_db_temp_name", rb_gimp_procedural_db_temp_name, 0);
-  rb_define_module_function(mGimp, "procedural_db_proc_info", rb_gimp_procedural_db_proc_info, 1);
-  rb_define_module_function(mGimp, "procedural_db_get_data", rb_gimp_procedural_db_get_data, 1);
-  rb_define_module_function(mGimp, "procedural_db_set_data", rb_gimp_procedural_db_set_data, 2);
-  rb_define_module_function(mGimp, "procedural_db_dump", rb_gimp_procedural_db_dump, 1);
-  rb_define_module_function(mGimp, "procedural_db_query", rb_gimp_procedural_db_query, 7);
-  rb_define_module_function(mGimp, "procedural_db_proc_arg", rb_gimp_procedural_db_proc_arg, 2);
-  rb_define_module_function(mGimp, "procedural_db_proc_val", rb_gimp_procedural_db_proc_val, 2);
-  rb_define_module_function(mGimp, "procedural_db_get_data_size", rb_gimp_procedural_db_get_data_size, 1);
+  rb_define_module_function(mGimp, "pdb_temp_name", rb_gimp_procedural_db_temp_name, 0);
+  rb_define_module_function(mGimp, "pdb_proc_info", rb_gimp_procedural_db_proc_info, 1);
+  rb_define_module_function(mGimp, "pdb_get_data", rb_gimp_procedural_db_get_data, 1);
+  rb_define_module_function(mGimp, "pdb_set_data", rb_gimp_procedural_db_set_data, 2);
+  rb_define_module_function(mGimp, "pdb_dump", rb_gimp_procedural_db_dump, 1);
+  rb_define_module_function(mGimp, "pdb_query", rb_gimp_procedural_db_query, 7);
+  rb_define_module_function(mGimp, "pdb_proc_arg", rb_gimp_procedural_db_proc_arg, 2);
+  rb_define_module_function(mGimp, "pdb_proc_val", rb_gimp_procedural_db_proc_val, 2);
+  rb_define_module_function(mGimp, "pdb_get_data_size", rb_gimp_procedural_db_get_data_size, 1);
 }

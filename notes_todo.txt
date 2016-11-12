@@ -51,6 +51,8 @@ Fix bad crash with 'gimp_procedural_db_proc_info' on deprecated procedures
 because they returned NULL values (some return values are explicitely missing because of the deprecation)
 Do we need cheks on other GimpParamData union members ? (see gimp.h)
 
+changed ruby method names in rbgimpproceduraldb.c
+
 
 This will tell git you want to start ignoring the changes to the file
 git update-index --assume-unchanged app.yaml
