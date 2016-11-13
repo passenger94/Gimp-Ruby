@@ -481,7 +481,7 @@ rb2GimpParamDefs (VALUE rbparamdefs,
 }
 
 VALUE
-GimpRGB2rb (const GimpRGB *color)
+  GimpRGB2rb(const GimpRGB *color)
 {
   GimpRGB *tmp = ALLOC(GimpRGB);
   *tmp = *color;
@@ -489,7 +489,7 @@ GimpRGB2rb (const GimpRGB *color)
 }
 
 GimpRGB *
-rb2GimpRGBPtr(VALUE rb_color)
+  rb2GimpRGBPtr(VALUE rb_color)
 {
   if (!rb_obj_is_kind_of(rb_color, cGimpRGB))
    rb_raise(rb_eTypeError, "Object %s is not a Gimp::RGB", StringValuePtr(rb_color));
@@ -519,7 +519,6 @@ rb2GimpParasite (VALUE leech)
 {
   GimpParasite result;
 
-
   VALUE rbname = rb_struct_aref(leech, ID2SYM(id_name));
   result.name = g_strdup(StringValuePtr(rbname));
 
@@ -528,8 +527,8 @@ rb2GimpParasite (VALUE leech)
   VALUE rbdata = rb_struct_aref(leech, ID2SYM(id_data));
   Check_Type(rbdata, T_STRING);
 
-  result.size = RSTRING_LEN(RSTRING(rbdata));
-  result.data = g_memdup(RSTRING_PTR(RSTRING(rbdata)), result.size);
+  result.size = RSTRING_LENINT(rbdata);
+  result.data = g_memdup(RSTRING_PTR(rbdata), result.size);
 
   return result;
 }
