@@ -45,11 +45,16 @@ typedef struct {
   gint count;
 } ParamsWrapper;
 
+void ParamsWrapper_mark(ParamsWrapper *ptr) { /* no Ruby objects to mark */ }
+
 static void
-params_wrapper_free (ParamsWrapper *ptr)
+  ParamsWrapper_free(ParamsWrapper *ptr)
 {
   gimp_destroy_params(ptr->array, ptr->count);
 }
+
+// creates struct ParamsWrapper_type
+TypedData_Type_New(ParamsWrapper);
 
 static void
 gc_register_params (GimpParam *array, gint count)
@@ -60,7 +65,7 @@ gc_register_params (GimpParam *array, gint count)
   ptr->array = array;
   ptr->count = count;
   
-  obj = Data_Wrap_Struct(rb_cObject, NULL, params_wrapper_free, ptr);
+  obj = TypedData_Wrap_Struct(rb_cObject, &ParamsWrapper_type, ptr);
   
   rb_ary_push(gc_array, obj);
 }

@@ -485,18 +485,17 @@ GimpRGB2rb (const GimpRGB *color)
 {
   GimpRGB *tmp = ALLOC(GimpRGB);
   *tmp = *color;
-  return Data_Wrap_Struct(cGimpRGB, NULL, free, tmp);
+  return TypedData_Wrap_Struct(cGimpRGB, &GimpRGB_type, tmp);
 }
 
 GimpRGB *
-rb2GimpRGBPtr (VALUE color)
+rb2GimpRGBPtr(VALUE rb_color)
 {
-  if (!rb_obj_is_kind_of(color, cGimpRGB))
-   rb_raise(rb_eTypeError, "Object %s is not a Gimp::RGB", StringValuePtr(color));
+  if (!rb_obj_is_kind_of(rb_color, cGimpRGB))
+   rb_raise(rb_eTypeError, "Object %s is not a Gimp::RGB", StringValuePtr(rb_color));
 
-  GimpRGB *tmp;
-  Data_Get_Struct(color, GimpRGB, tmp);
-  return tmp;
+  Get_TypedStruct(rb_color, GimpRGB, color);
+  return color;
 }
 
 GimpRGB

@@ -103,6 +103,8 @@ VALUE rb_gimp_procedural_db_set_data(VALUE  self,
                                      VALUE  identifier,
                                      VALUE  data)
 {
+  // gboolean success;
+  // success = gimp_procedural_db_set_data((gchar *)StringValuePtr(identifier), data)
   /*TODO*/
   rb_notimplement();
   return Qnil;

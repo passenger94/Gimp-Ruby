@@ -19,23 +19,29 @@
  */
 
 
-/* Ruby 1.8 -> 1.9.2 migration */
+/*
+ * New Extension API 
+ */
+// creates the rb_data_type_t part of underlaying C foundation of a becoming ruby object
+#define TypedData_Type_New(wrapped) \
+const rb_data_type_t wrapped##_type = { \
+    #wrapped "_type", \
+    { \
+      (void (*)(void *))wrapped##_mark, \
+      (void (*)(void *))wrapped##_free, \
+      (size_t (*)(const void *))sizeof(wrapped), \
+    }, \
+    0, 0, \
+    RUBY_TYPED_FREE_IMMEDIATELY, \
+}
 
-#ifndef RSTRING_PTR
-#define RSTRING_PTR(x) (RSTRING(x)->ptr)
-#endif
+// unwraps a ruby object (rbObject), declare var of type wrapped
+#define Get_TypedStruct(rbObject, wrapped, var) \
+  wrapped *var; \
+  TypedData_Get_Struct(rbObject, wrapped, &wrapped##_type, var)
 
-#ifndef RSTRING_LEN
-#define RSTRING_LEN(str) RSTRING(str)->len
-#endif
-
-#ifndef RARRAY_LEN
-#define RARRAY_LEN(x) (RARRAY(x)->len)
-#endif
-
-#ifndef RARRAY_PTR
-#define RARRAY_PTR(x) (RARRAY(x)->ptr)
-#endif
+// 
+const rb_data_type_t GimpRGB_type;
 
 
 

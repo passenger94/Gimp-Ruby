@@ -24,21 +24,26 @@
 
 VALUE cGimpRGB;
 
+void GimpRGB_mark(GimpRGB *ptr) { /* no Ruby objects to mark */ }
+void GimpRGB_free(GimpRGB *ptr) { free((void *)ptr); }
+
+// creates struct GimpRGB_type
+TypedData_Type_New(GimpRGB);
+
 static VALUE
-rb_gimp_rgb_alloc (VALUE klass)
+  rb_gimp_rgb_alloc(VALUE klass)
 {
   GimpRGB *color = ALLOC(GimpRGB);
-  return Data_Wrap_Struct(klass, NULL, free, color);
+  return TypedData_Wrap_Struct(klass, &GimpRGB_type, color);
 }
 
 static VALUE
-rb_gimp_rgb_initialize(int argc, VALUE *argv, VALUE self)
+  rb_gimp_rgb_initialize(int argc, VALUE *argv, VALUE self)
 {
   volatile VALUE r, g, b, a;
   rb_scan_args(argc, argv, "04", &r, &g, &b, &a);
 
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   if(argc == 0)
     {
@@ -75,8 +80,7 @@ rb_gimp_rgb_set (VALUE self,
                  VALUE g,
                  VALUE b)
 {
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   gimp_rgb_set(color,
                (gdouble)NUM2DBL(r),
@@ -93,8 +97,7 @@ rb_gimp_rgba_set (VALUE self,
                   VALUE b,
                   VALUE a)
 {
-    GimpRGB *color;
-    Data_Get_Struct(self, GimpRGB, color);
+    Get_TypedStruct(self, GimpRGB, color);
 
     gimp_rgba_set(color,
                   (gdouble)NUM2DBL(r),
@@ -220,8 +223,7 @@ static VALUE
 rb_gimp_rgb_set_alpha (VALUE self,
                        VALUE alpha)
 {
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   gimp_rgb_set_alpha(color, (gdouble)NUM2DBL(alpha));
 
@@ -234,8 +236,7 @@ rb_gimp_rgb_set_uchar (VALUE self,
                        VALUE g,
                        VALUE b)
 {
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   gimp_rgb_set_uchar(color,
                      (guchar)NUM2INT(r),
@@ -252,8 +253,7 @@ rb_gimp_rgba_set_uchar (VALUE self,
                         VALUE b,
                         VALUE a)
 {
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   gimp_rgba_set_uchar(color,
                       (guchar)NUM2INT(r),
@@ -267,8 +267,7 @@ rb_gimp_rgba_set_uchar (VALUE self,
 static VALUE
 rb_gimp_rgb_get_uchar (VALUE self)
 {
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   guchar r, g, b;
   gimp_rgb_get_uchar(color, &r, &g, &b);
@@ -279,8 +278,7 @@ rb_gimp_rgb_get_uchar (VALUE self)
 static VALUE
 rb_gimp_rgba_get_uchar (VALUE self)
 {
-  GimpRGB *color;
-  Data_Get_Struct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
   guchar r, g, b, a;
   gimp_rgba_get_uchar(color, &r, &g, &b, &a);
