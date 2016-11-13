@@ -20,12 +20,15 @@ RubyFu.register(
 ) do |run_mode, image, drawable|
     include PDB::Access
     gimp_message_set_handler(ERROR_CONSOLE)
+
+    if drawable.layer_mask? || drawable.have_mask?
+        drw = drawable.layer_mask? ? gimp_layer_from_mask(drawable) : drawable
+        gimp_layer_set_apply_mask(drw, !gimp_layer_get_apply_mask(drw).to_bool)
     
-    drw = drawable.layer_mask? ? gimp_layer_from_mask(drawable) : drawable
-        
-    gimp_layer_set_apply_mask(drw, gimp_layer_get_apply_mask(drw) == 0 ? true : false)
-        
-    Display.flush
+        Display.flush
+    else
+        message "This layer doesn't have a layer mask !"
+    end
 end
 
 # for use with a shortcut, i use : Ctrl+Shift M  
