@@ -80,6 +80,14 @@ module Gimp
         def indexed?
             PDB.gimp_drawable_is_indexed(self) == 1
         end
+
+        def have_mask?
+            if self.is_a? Gimp::Layer
+                PDB.gimp_layer_get_mask(self).instance_variable_get(:@self) != -1
+            else
+                false
+            end
+        end
                 
     end
 end
