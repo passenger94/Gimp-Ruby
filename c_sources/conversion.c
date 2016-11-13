@@ -231,8 +231,8 @@ rb2gimp_array (GimpPDBArgType type,
                VALUE          rbarr)
 {
   rbarr = rb_check_array_type(rbarr);
-  int count = RARRAY_LEN(RARRAY(rbarr));
-  VALUE *arr = RARRAY_PTR(RARRAY(rbarr));
+  int count = RARRAY_LENINT(rbarr);
+  VALUE *arr = RARRAY_PTR(rbarr);
 
   int i;
   gint32  *int32arr;
@@ -398,8 +398,8 @@ rb2GimpParams (VALUE rbparams,
                gint  *count)
 {
   rbparams = rb_check_array_type(rbparams);
-  int num = RARRAY_LEN(RARRAY(rbparams));
-  VALUE *arr = RARRAY_PTR(RARRAY(rbparams));
+  int num = RARRAY_LENINT(rbparams);
+  VALUE *arr = RARRAY_PTR(rbparams);
 
   GimpParam *params = g_new(GimpParam, num);
 
@@ -466,8 +466,8 @@ rb2GimpParamDefs (VALUE rbparamdefs,
     {
         Check_Type(rbparamdefs, T_ARRAY);
 
-      int num = RARRAY_LEN(RARRAY(rbparamdefs));
-      VALUE *arr = RARRAY_PTR(RARRAY(rbparamdefs));
+      int num = RARRAY_LENINT(rbparamdefs);
+      VALUE *arr = RARRAY_PTR(rbparamdefs);
 
       GimpParamDef *gimpparamdefs = g_new(GimpParamDef, num);
 

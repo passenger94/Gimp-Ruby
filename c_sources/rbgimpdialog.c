@@ -287,8 +287,8 @@ make_list_combo_box (VALUE list)
   GtkComboBox *cbox = GTK_COMBO_BOX(widget);
   
   list = rb_check_array_type(list);
-  int num = RARRAY_LEN(RARRAY(list));
-  VALUE *ary = RARRAY_PTR(RARRAY(list));
+  int num = RARRAY_LENINT(list);
+  VALUE *ary = RARRAY_PTR(list);
   
   int i;
   for (i=0; i<num; i++)
@@ -610,8 +610,8 @@ make_table (VALUE    params,
             Result **results)
 {
   params = rb_check_array_type(params);
-  int num = RARRAY_LEN(RARRAY(params));
-  VALUE *ary = RARRAY_PTR(RARRAY(params));
+  int num = RARRAY_LENINT(params);
+  VALUE *ary = RARRAY_PTR(params);
 
   Result *results_arr = g_new(Result, num);
 

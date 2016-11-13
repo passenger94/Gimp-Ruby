@@ -209,8 +209,8 @@ rb_gimp_main(VALUE self, VALUE plug_in_info)
   plug_in_callbacks[3] = run_proc;
   
   /* build argv */
-  VALUE *arr = RARRAY_PTR(RARRAY(rb_argv));
-  gint argc = RARRAY_LEN(RARRAY(rb_argv));
+  VALUE *arr = RARRAY_PTR(rb_argv);
+  gint argc = RARRAY_LENINT(rb_argv);
   gchar *argv[argc + 1];
   
   VALUE name = rb_gv_get("$0");

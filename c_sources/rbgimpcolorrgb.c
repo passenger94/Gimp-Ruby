@@ -97,15 +97,15 @@ rb_gimp_rgba_set (VALUE self,
                   VALUE b,
                   VALUE a)
 {
-    Get_TypedStruct(self, GimpRGB, color);
+  Get_TypedStruct(self, GimpRGB, color);
 
-    gimp_rgba_set(color,
-                  (gdouble)NUM2DBL(r),
-                  (gdouble)NUM2DBL(g),
-                  (gdouble)NUM2DBL(b),
-                  (gdouble)NUM2DBL(a));
+  gimp_rgba_set(color,
+                (gdouble)NUM2DBL(r),
+                (gdouble)NUM2DBL(g),
+                (gdouble)NUM2DBL(b),
+                (gdouble)NUM2DBL(a));
 
-    return rb_ary_new3(4, r, g, b, a);
+  return rb_ary_new3(4, r, g, b, a);
 }
 
 static VALUE
