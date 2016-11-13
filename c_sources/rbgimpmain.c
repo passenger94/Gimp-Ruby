@@ -45,7 +45,7 @@ typedef struct {
   gint count;
 } ParamsWrapper;
 
-void ParamsWrapper_mark(ParamsWrapper *ptr) { /* no Ruby objects to mark */ }
+static void ParamsWrapper_mark(ParamsWrapper *ptr) { /* no Ruby objects to mark */ }
 
 static void
   ParamsWrapper_free(ParamsWrapper *ptr)
@@ -57,7 +57,7 @@ static void
 TypedData_Type_New(ParamsWrapper);
 
 static void
-gc_register_params (GimpParam *array, gint count)
+  gc_register_params(GimpParam *array, gint count)
 {
   volatile VALUE obj;
   
@@ -177,7 +177,7 @@ run_callback (const gchar      *name,
               gint             n_params,
               const GimpParam  *param,
               gint             *n_return_vals,
-              GimpParam       **return_vals)
+              GimpParam        **return_vals)
 {
   volatile VALUE args = GimpParams2rb(param, n_params);
   volatile VALUE rbreturn_vals;

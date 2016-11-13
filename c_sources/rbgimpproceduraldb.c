@@ -23,7 +23,7 @@
 #include "rbgimp.h"
 
 /*TODO a lot of these function might as well be used from the pdb.
- figure out which ones.*/
+ figure out which ones. Beware though, they are not necessarily returning the same thing*/
  
 static VALUE
 rb_gimp_procedural_db_temp_name(VALUE  self)
@@ -90,24 +90,41 @@ rb_gimp_procedural_db_proc_info(VALUE  self,
 }
 
 static VALUE
-rb_gimp_procedural_db_get_data(VALUE  self,
-                               VALUE  identifier)
+  rb_gimp_procedural_db_get_data(VALUE self, VALUE identifier)
 {
   /*TODO*/
+  // gboolean success;
+  // gpointer c_data (pack/unpack bytes ?)
+  // success = gimp_procedural_db_get_data( (gchar *)StringValuePtr(identifier), 
+  //                                        &c_data )
+  // if (success)
+  //   return rb_data;
   rb_notimplement();
   return Qnil;
 }
 
-static
-VALUE rb_gimp_procedural_db_set_data(VALUE  self,
-                                     VALUE  identifier,
-                                     VALUE  data)
+static VALUE 
+  rb_gimp_procedural_db_set_data(VALUE self, VALUE identifier, VALUE rb_data)
 {
-  // gboolean success;
-  // success = gimp_procedural_db_set_data((gchar *)StringValuePtr(identifier), data)
   /*TODO*/
+  // gboolean success;
+  // c_data (pack/unpack bytes ?)
+  // success = gimp_procedural_db_set_data( (gchar *)StringValuePtr(identifier), 
+  //                                        (gconstpointer)c_data,
+  //                                        (guint32)c_data_length_in_bytes )
+  // if (success)
+  //   return Qtrue;
   rb_notimplement();
   return Qnil;
+}
+
+static VALUE
+  rb_gimp_procedural_db_get_data_size(VALUE self, VALUE identifier)
+{
+  gint bytes;
+  bytes = gimp_procedural_db_get_data_size((gchar *)StringValuePtr(identifier));
+
+  return INT2NUM(bytes);
 }
 
 static VALUE
@@ -218,25 +235,15 @@ rb_gimp_procedural_db_proc_val(VALUE  self,
     }
 }
 
-static VALUE
-rb_gimp_procedural_db_get_data_size(VALUE  self,
-                                    VALUE  identifier)
-{
-  gint bytes;
-  bytes = gimp_procedural_db_get_data_size((gchar *)StringValuePtr(identifier));
-
-  return INT2NUM(bytes);
-}
-
 void Init_gimpproceduraldb(void)
 {
   rb_define_module_function(mGimp, "pdb_temp_name", rb_gimp_procedural_db_temp_name, 0);
   rb_define_module_function(mGimp, "pdb_proc_info", rb_gimp_procedural_db_proc_info, 1);
   rb_define_module_function(mGimp, "pdb_get_data", rb_gimp_procedural_db_get_data, 1);
   rb_define_module_function(mGimp, "pdb_set_data", rb_gimp_procedural_db_set_data, 2);
+  rb_define_module_function(mGimp, "pdb_get_data_size", rb_gimp_procedural_db_get_data_size, 1);
   rb_define_module_function(mGimp, "pdb_dump", rb_gimp_procedural_db_dump, 1);
   rb_define_module_function(mGimp, "pdb_query", rb_gimp_procedural_db_query, 7);
   rb_define_module_function(mGimp, "pdb_proc_arg", rb_gimp_procedural_db_proc_arg, 2);
   rb_define_module_function(mGimp, "pdb_proc_val", rb_gimp_procedural_db_proc_val, 2);
-  rb_define_module_function(mGimp, "pdb_get_data_size", rb_gimp_procedural_db_get_data_size, 1);
 }
