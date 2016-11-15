@@ -29,16 +29,14 @@ module RubyFu
     attr_reader :default, :subtype
     
     def self.method_missing(sym, *args)
-      if args.length == 3
-        default = args.pop
-        pdef = super(sym, *args)
+      default = args.length == 3 ? args.pop : nil
+      pdef = super(sym, *args)
+      if default
         pdef.check(default)
         pdef.instance_variable_set(:@default, default)
-        
-        pdef
-      else
-        super
       end
+
+      pdef
     end
     
     def self.FONT(*args)
