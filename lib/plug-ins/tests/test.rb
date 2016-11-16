@@ -165,7 +165,7 @@ RubyFu.menu_register("ruby-fu-test-call-echo", TestMenu)
 
 RubyFu.register(
     :name       => "ruby-fu-test-shelf",
-    :blurb      => "Test that the shelf works correctly.",
+    :blurb      => "Test that the Shelf works correctly.",
     :help       => nil,
     :author     => nil,
     :copyright  => nil,
@@ -175,23 +175,19 @@ RubyFu.register(
     :params     => [],
     :results    => []
 ) do|run_mode|
+  
   def test_method
     return false if Gimp::Shelf["badstring"] != nil
     
-    Gimp.message "Previous value = #{Gimp::Shelf['goodstring'].inspect}"
+    Gimp.message "non existing Key value, should be nil : #{Gimp::Shelf['goodstring'].inspect}"
     
     obj = ["wow", 1]
     Gimp::Shelf["goodstring"] = obj
-    return false if Gimp::Shelf["goodstring"] != obj
-    
-    return true
+
+    Gimp::Shelf["goodstring"] == obj
   end
   
-  if test_method
-    Gimp.message "Success!"
-  else
-    Gimp.message "Failure"
-  end
+  Gimp.message test_method ? "Success!" : "Failure"
 end
 
 RubyFu.menu_register("ruby-fu-test-shelf", TestMenu)
@@ -210,7 +206,7 @@ RubyFu.register(
     :imagetypes => nil,
     :params     => [], 
     :results    => []
-) do||
+) do ||
   raise "This is a test exception"
 end
 
@@ -241,21 +237,21 @@ RubyFu.register(
   require "stringio"
   $stdout = StringIO.new
   
-  print "Calling with bad params ... "
-  test_exception(TypeError){PDB.gimp_message(123)}
+  PDB.gimp_message "Calling with bad params ..."
+  test_exception(TypeError) {PDB.gimp_message(123)}
   
-  print "Calling with too many params ... "
-  test_exception(ArgumentError){PDB.gimp_message(123, 123)}
+  PDB.gimp_message "Calling with too many params ..."
+  test_exception(ArgumentError) {PDB.gimp_message(123, 123)}
   
   #THIS CRASHES HORRIBLY. NOT SURE IF IT'S MY FAULT OR NOT.
-  printf 'Calling error ... '
+  PDB.gimp_message "Calling error ..."
   test_exception(PDB::CallingError) do
     Gimp.run_procedure('ruby-fu-test-crash', [Gimp::Param.INT32(123)])
-    #PDB.plug_in_script_fu_eval('(ruby-fu-test-crash 123)')
+    #PDB.plug_in_script_fu_eval('(PDB.ruby-fu-test-crash 123)')
   end
 
-  printf "Execution error ... "
-  test_exception(PDB::ExecutionError){PDB.ruby_fu_test_crash}
+  PDB.gimp_message "Execution error ..."
+  test_exception(PDB::ExecutionError) {PDB.ruby_fu_test_crash}
   
   Gimp.message("Tests " + ($failure ? "failed" : "successful") + ":\n" + $stdout.string)
   $stdout = STDOUT

@@ -5,16 +5,16 @@ include Gimp
 include RubyFu
 
 RubyFu.register(
-    :name       => "ruby-fu-hideAllExceptActive", #procedure name
-    :blurb      => "hide all layers except active", #blurb
-    :help       => "hide all layers except active", #help
-    :author     => "xy", #author
-    :copyright  => "xy", #copyright
-    :date       => "2013", #date
-    :menulabel   => "Hide All Except Active", #menulabel
-    :imagetypes => "*", #image types
+    :name       => "ruby-fu-hideAllExceptActive", 
+    :blurb      => "hide all layers except active", 
+    :help       => "hide all layers except active", 
+    :author     => "xy", 
+    :copyright  => "xy", 
+    :date       => "2013", 
+    :menulabel   => "Hide All Except Active", 
+    :imagetypes => "*",
     :params     => [],
-    :results    => [] #results
+    :results    => []
     
 ) do |run_mode, image, drawable|
     include PDB::Access
@@ -23,19 +23,19 @@ RubyFu.register(
         image.layersOO.each {|l| l.set_visible(false) unless l == image.get_active_layer }
     end
     Display.flush
-end #register
+end
 
 RubyFu.register(
-    :name       => "ruby-fu-showAll", #procedure name
-    :blurb      => "show all layers", #blurb
-    :help       => "show all layers", #help
-    :author     => "xy", #author
-    :copyright  => "xy", #copyright
-    :date       => "2008", #date
-    :menulabel   => "show All", #menulabel
-    :imagetypes => "*", #image types
+    :name       => "ruby-fu-showAll",
+    :blurb      => "show all layers",
+    :help       => "show all layers",
+    :author     => "xy",
+    :copyright  => "xy",
+    :date       => "2008",
+    :menulabel   => "show All",
+    :imagetypes => "*",
     :params     => [],
-    :results    => [] #results
+    :results    => []
     
 ) do |run_mode, image, drawable|
     include PDB::Access
@@ -44,7 +44,7 @@ RubyFu.register(
         image.layersOO.each {|l| l.set_visible(true)}
     end
     Display.flush
-end #register
+end
 
 ["ruby-fu-hideAllExceptActive", "ruby-fu-showAll"].each {|fn| RubyFu.menu_register(fn, "<Layers>/ShowHide")}
 
