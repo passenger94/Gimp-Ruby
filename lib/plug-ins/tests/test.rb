@@ -53,7 +53,7 @@ RubyFu.register(
 end
 
 RubyFu.register(
-    :name       => "ruby-fu-test-echo", #procedure name
+    :name       => "ruby-fu-test-echo",
     :blurb      => nil,
     :help       => nil,
     :author     => nil,

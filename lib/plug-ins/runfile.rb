@@ -54,28 +54,27 @@ help_string = _(
 )
 
 register(
-  :name       => "ruby-fu-run-file", #procedure name
-  :blurb      => "Runs a Ruby-Fu script without requiring you to install it.", #blurb
-  :help       => help_string, #help
-  :author     => "Scott Lembcke", #author
-  :copyright  => "Scott Lembcke", #copyright
-  :date       => "2006", #date
-  :menulabel   => "Run File", #menupath
-  :imagetypes => nil, #image types
+  :name       => "ruby-fu-run-file",
+  :blurb      => "Runs a Ruby-Fu script without requiring you to install it.",
+  :help       => help_string,
+  :author     => "Scott Lembcke",
+  :copyright  => "Scott Lembcke",
+  :date       => "2006",
+  :menulabel  => "Run File",
+  :imagetypes => nil,
   :params     => [
                   ParamDef.FILE("file", "File"),
                   ParamDef.STRING("procedure", "Procedure name\n(only needed if there is \nseveral procedures in the file)", "ruby-fu-"),
                   ParamDef.DRAWABLE("drawable", "Drawable (if needed)"),
-                 ], #params
-  :results    => [] #results
+                 ],
+  :results    => []
   
-) do|run_mode, filename, procname, drawable|
+) do |run_mode, filename, procname, drawable|
     begin
         if procname == "ruby-fu-"
-            s = File.read(filename)
-            matches = /(ruby-fu-.*)["'].*/.match(s)
+            matches = /name.+(ruby-fu-.*)["'].*/.match(File.read(filename))
             raise "Sorry ...\ndidn't find a ruby-fu function in\n#{filename}\n" if matches.nil?
-            procname = /(ruby-fu-.*)["'].*/.match(s)[1]
+            procname = matches[1]
         end
         
         Shelf["ruby-fu-last-run-file"] = [filename, procname, drawable]
@@ -92,22 +91,23 @@ menu_register("ruby-fu-run-file", RubyFu::RubyFuToolbox)
 
 
 register(
-  :name       => "ruby-fu-rerun-file", #procedure name
-  :blurb      => _("Reruns the last file ran using Runfile"), #blurb
-  :help       => nil, #help
-  :author     => "Scott Lembcke", #author
-  :copyright  => "Scott Lembcke", #copyright
-  :date       => "2006", #date
-  :menulabel   => "Run_again File", #menupath
-  :imagetypes => nil, #image types
-  :params     => [], #params
-  :results    => [] #results
+  :name       => "ruby-fu-rerun-file",
+  :blurb      => _("Reruns the last file ran using Runfile"),
+  :help       => nil,
+  :author     => "Scott Lembcke",
+  :copyright  => "Scott Lembcke",
+  :date       => "2006",
+  :menulabel  => "Run_again File",
+  :imagetypes => nil,
+  :params     => [],
+  :results    => []
   
-) do|run_mode, filename, procname|
+) do |run_mode, filename, procname|
   last = Shelf["ruby-fu-last-run-file"]
   
   if last
-    PDB.ruby_fu_run_file(*last)
+    load(last.shift)
+		RubyFu.test_proc(*last)
   else
     Gimp.message _("No previous file to run")
   end
