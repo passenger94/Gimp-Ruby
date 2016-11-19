@@ -1,8 +1,6 @@
 #!ruby
 
 require "rubyfu"
-
-include Gimp
 include RubyFu
 
 RubyFu.register(
@@ -34,7 +32,7 @@ RubyFu.register(
             plug_in_gauss_iir2(image, wraplayer, radius, radius)
             plug_in_edge(image, wraplayer, 10.0, 0, 0)
             wraplayer.set_mode(NORMAL_MODE)
-            wraplayer.desaturate(DESATURATE_LUMINOSITY)
+            wraplayer.desaturate(DESATURATE_LUMINANCE)
             gimp_invert(wraplayer)
             plug_in_gauss_iir2(image, wraplayer, 5, 5) if smooth == 1
             Edit.copy(wraplayer)

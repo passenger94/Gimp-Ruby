@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
 require "rubyfu"
-
-include Gimp
 include RubyFu
 
 def apply_cool_metal_logo_effect(img, logo_layer, size, bg_color, gradient, gradient_reverse)

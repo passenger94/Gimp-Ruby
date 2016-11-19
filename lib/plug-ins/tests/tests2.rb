@@ -1,7 +1,6 @@
-#!/usr/bin/env ruby
+#!ruby
 
 require "rubyfu"
-include Gimp
 include RubyFu
 
 assert = ->(obj, met) {

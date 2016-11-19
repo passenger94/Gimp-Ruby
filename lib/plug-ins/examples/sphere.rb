@@ -19,7 +19,6 @@
 
 
 require "rubyfu"
-include Gimp
 include RubyFu
 
 
