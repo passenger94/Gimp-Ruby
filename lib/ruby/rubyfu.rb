@@ -16,9 +16,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor,Boston, MA
 # 02110-1301, USA.
 
-require 'gimp.rb'
+require 'gimp'
 
 module RubyFu
+  include Gimp
 
   class CallError < Exception; end
   class ResultError < Exception; end

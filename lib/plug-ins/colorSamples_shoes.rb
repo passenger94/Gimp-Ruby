@@ -1,7 +1,6 @@
 #!ruby
 
 require "rubyfu"
-include Gimp
 include RubyFu
 
 dir = File.dirname(__FILE__)

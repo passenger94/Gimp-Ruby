@@ -19,8 +19,6 @@
 # 02110-1301, USA.
 
 require "rubyfu"
-
-include Gimp
 include RubyFu
 
 module RubyFu

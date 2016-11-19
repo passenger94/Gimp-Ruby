@@ -57,8 +57,6 @@
 ##############################################################################
 
 require "rubyfu"
-
-include Gimp
 include RubyFu
 
 # Tattoo constants

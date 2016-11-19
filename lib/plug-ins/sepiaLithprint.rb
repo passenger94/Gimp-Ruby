@@ -1,8 +1,6 @@
 #!ruby
 
 require "rubyfu"
-
-include Gimp
 include RubyFu
 
 def processgrouplayer(img, layer)

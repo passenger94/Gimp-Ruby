@@ -1,7 +1,6 @@
 #!ruby
 
 require "rubyfu"
-include Gimp
 include RubyFu
 
 require File.expand_path("shoesfu.rb", File.dirname(__FILE__))

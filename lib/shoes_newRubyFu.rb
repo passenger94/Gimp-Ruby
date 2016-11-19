@@ -337,8 +337,6 @@ Default_help = [Image_help,
         code = "#!ruby
 
 require 'rubyfu'
-
-include Gimp
 include RubyFu
 
 RubyFu.register(

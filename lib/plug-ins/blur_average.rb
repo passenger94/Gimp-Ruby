@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'rubyfu'
-
-include Gimp
 include RubyFu
 
 RubyFu.register(

@@ -1,7 +1,5 @@
 #!ruby
 require 'rubyfu'
-
-include Gimp
 include RubyFu
 
 RubyFu.register(
