@@ -118,10 +118,9 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width: 800, height: 600 do
     
     def launch_db_browser
         
-        @proc_names = mute_get {puts "procs = gimp_procedural_db_query("+
-                                    "'.*','.*','.*','.*','.*','.*','.*')[1]"}
-                                    .match(RE_IRBRETURN)[1].gsub!(/"/, '')
-                                    .split(", ").sort
+        @proc_names = mute_get { puts "procs = gimp_procedural_db_query('.*','.*','.*','.*','.*','.*','.*')[1]" }
+                    .match(RE_IRBRETURN)[1].gsub!(/"/, '')
+                    .split(", ").sort
         
         
         window title: "Procedural Database Browser", width: 800, height: 500 do

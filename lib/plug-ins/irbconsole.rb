@@ -76,8 +76,8 @@ RubyFu.register(
 ###  Shoes console    
     require File.expand_path("shoesfu.rb", File.dirname(__FILE__))
     console = File.join(GIMP_DIRECTORY, "plug-ins/shoes_console.rb")
-    #$stdout = io = IO.popen([ShoesFu::SHOES, console, :err=>:out], "w+")
-    $stdout = io = IO.popen([ShoesFu::SHOES, console, "w+"], :err=>[:child, :out])
+    $stdout = io = IO.popen([ShoesFu::SHOES, console, :err=>:out], "w+")
+    # $stdout = io = IO.popen([ShoesFu::SHOES, console, "w+"], :err=>[:child, :out])
     
     
     IRB.start_session(io)
