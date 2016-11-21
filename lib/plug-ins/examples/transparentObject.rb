@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!ruby
 
 require "rubyfu"
 include RubyFu
@@ -11,7 +11,7 @@ RubyFu.register(
     :author     => "xy",
     :copyright  => "xy",
     :date       => "2013",
-    :menulabel   => "transparent object",
+    :menulabel  => "transparent object",
     :imagetypes => "RGBA",
     :params     => [
             ParamDef.COLOR('col', 'object color', Color(0.5,0.5,0.5)),

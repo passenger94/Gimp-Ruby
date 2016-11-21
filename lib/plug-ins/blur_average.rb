@@ -26,6 +26,7 @@ RubyFu.register(
             h2 = (drawable.height / 2).to_i
             max = w2 > h2 ? w2 : h2
             col = image.pick_color(drawable, w2, h2, false, true, max)
+            Context.get_foreground
             Context.set_foreground(col)
             Edit.fill(drawable, 0)
             

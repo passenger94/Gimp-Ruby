@@ -128,13 +128,13 @@ module RubyFu
 
   class Procedure
     
-    def initialize(*args, &func)
+    def initialize(*args, &block)
       @name, @blurb, @help, @author, @copyright, @date, menulabel, @imagetypes, @params, @results = *args
       
       @menulabel = (menulabel.empty?) ? @name : menulabel
       @menupaths = []
             
-      @function = func
+      @function = block
     end
     
     def add_menupath(path)
@@ -201,7 +201,7 @@ module RubyFu
     end
     
     def default_args
-      defArgs = @params.collect do |pdef|
+      @params.map do |pdef|
         pdef.default if pdef.respond_to? :default
       end
     end
@@ -239,11 +239,11 @@ module RubyFu
         else []
       end
       
-      args = args.zip(fullparams).collect do |arg, param|
+      args = args.zip(fullparams).map do |arg, param|
         raise(CallError, "Bad argument") unless arg.type == param.type
-        next arg.transform
+        arg.transform
       end
-      # benchmark/ips tells :collect version is slightly faster
+      ## benchmark/ips tells :map version is slightly faster
       #args = args.zip(fullparams).each_with_object([]) do|(arg, param), obj|
       #  raise(CallError, "Bad argument") unless arg.type == param.type
       #  obj << arg.transform

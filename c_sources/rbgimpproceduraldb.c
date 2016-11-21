@@ -35,8 +35,20 @@ rb_gimp_procedural_db_temp_name(VALUE  self)
 }
 
 static VALUE
+rb_gimp_procedural_db_proc_exists(VALUE  self,
+                                  VALUE  procedure)
+{
+  gboolean exists;
+  if (rb_type(procedure) == T_SYMBOL)
+    procedure = rb_funcall(rb_sym2str(procedure), rb_intern("gsub"), 2, rb_str_new2("_"), rb_str_new2("-"));
+
+  exists = gimp_procedural_db_proc_exists(StringValuePtr(procedure));
+  return exists ? Qtrue : Qfalse;
+}
+
+static VALUE
 rb_gimp_procedural_db_proc_info(VALUE  self,
-                                 VALUE  procedure)
+                                VALUE  procedure)
 {
   gchar *blurb, *help, *author, *copyright, *date;
   GimpPDBProcType proc_type;
@@ -238,6 +250,7 @@ rb_gimp_procedural_db_proc_val(VALUE  self,
 void Init_gimpproceduraldb(void)
 {
   rb_define_module_function(mGimp, "pdb_temp_name", rb_gimp_procedural_db_temp_name, 0);
+  rb_define_module_function(mGimp, "pdb_proc_exists", rb_gimp_procedural_db_proc_exists, 1);
   rb_define_module_function(mGimp, "pdb_proc_info", rb_gimp_procedural_db_proc_info, 1);
   rb_define_module_function(mGimp, "pdb_get_data", rb_gimp_procedural_db_get_data, 1);
   rb_define_module_function(mGimp, "pdb_set_data", rb_gimp_procedural_db_set_data, 2);

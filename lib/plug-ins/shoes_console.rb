@@ -123,7 +123,7 @@ Shoes.app title: "Shoes Irb <-> Gimp console", width: 800, height: 600 do
                     .split(", ").sort
         
         
-        window title: "Procedural Database Browser", width: 800, height: 500 do
+        window title: "Procedural Database Browser", width: 900, height: 500 do
             style(Shoes::Link, underline: "none", stroke: black)
             style(Shoes::LinkHover, underline: "none", stroke: rgb(75,0,0), :fill => rgb(244,243,203))
             @style_bold = {weight: 'bold'}

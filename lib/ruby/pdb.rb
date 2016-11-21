@@ -32,8 +32,8 @@ module PDB
 
   class NoProcedure < PDBException
     attr_reader :message
-    def initialize(name)
-      @message = "#{name} is not in the PDB"
+    def initialize(proc_name)
+      @message = "#{proc_name} is not in the PDB"
     end
   end
   
@@ -53,8 +53,8 @@ module PDB
   
 
   class Procedure
-    attr_reader :name, :blurb, :help, :author, :copyright, :date
-    attr_reader :proc_type, :args, :return_vals
+    attr_reader :name, :blurb, :help, :author, :copyright, :date,
+                :proc_type, :args, :return_vals
     
     @@cache = {}
     
@@ -69,7 +69,7 @@ module PDB
       values = Gimp.pdb_proc_info(name)
       raise(NoProcedure, name) unless values
       
-      @blurb, @help, @author, @copyright, @date, @proc_type, @args, @return_vals = *values
+      @blurb, @help, @author, @copyright, @date, @proc_type, @args, @return_vals = values
     end
     
     def convert_args(args)
@@ -78,8 +78,7 @@ module PDB
       raise(ArgumentError, "Wrong number of parameters. #{arglen} for #{prmlen} expected") unless arglen == prmlen
 
       begin
-        args.zip(@args).collect do |arr|
-          arg, paramdef = arr
+        args.zip(@args).map do |arg, paramdef|
           arg = ruby2int_filter(arg)
           paramdef.check(arg)
           Gimp::Param.new(paramdef.type, arg)
@@ -95,7 +94,7 @@ module PDB
       when Gimp::PDB_EXECUTION_ERROR  then raise(ExecutionError, @name)
       end
       
-      values.collect{|param| param.transform}
+      values.map { |param| param.transform }
     end
     
     def call(*args)
@@ -108,10 +107,7 @@ module PDB
         puts "PDB call: #@name(#{arg_str})"
       end
 
-      params = convert_args(args)
-      ## since ruby 1.9,  splat operator changed
-      #return *convert_return_values(Gimp.run_procedure(@name, params))
-      retvals = convert_return_values(Gimp.run_procedure(@name, params))
+      retvals = convert_return_values(Gimp.run_procedure(@name, convert_args(args)))
       retvals.size == 1 ? retvals[0] : retvals
     end
     
@@ -160,8 +156,6 @@ module PDB
           args += [Gimp::Param.IMAGE(image), Gimp::Param.DRAWABLE(drawable)]
         end
         
-        #since ruby 1.9,  splat operator changed
-        #return *proc.convert_return_values(Gimp.run_procedure(name, args))
         retvals = proc.convert_return_values(Gimp.run_procedure(name, args))
         retvals.size == 1 ? retvals[0] : retvals
       else
@@ -175,22 +169,18 @@ module PDB
     SKIP = [:to_hash, :to_str, :to_ary, :to_a, :to_io, :to_int]
 
     def method_missing(sym, *args)
-        case args.size
-          when 0
-            # TODO ??
-            super if SKIP.include?(sym)
-            Procedure.new(sym.to_s.gsub('_', '-')).call
-          when 1
-            Procedure.new(sym.to_s.gsub('_', '-')).call(args[0])
-          else
-            Procedure.new(sym.to_s.gsub('_', '-')).call(*args)
-        end
+        
+      unless SKIP.include?(sym) # WTF ??
+        Procedure.new(sym.to_s.gsub('_', '-')).call(*args)
+      end
+
       rescue NoProcedure
-        warn $!.message
+        Gimp.message "NoProcedure !! #{$!.message}"
+        warn "NoProcedure !! #{$!.message}"
         super
     end
     module_function :method_missing
-    
+
   end
   
   extend Access

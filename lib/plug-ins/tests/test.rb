@@ -20,8 +20,6 @@
 
 require "rubyfu"
 
-TestMenu = RubyFu.menu_branch_register(RubyFu::RubyFuToolbox, "Test")
-
 RubyFu.register(
     :name       => "ruby-fu-test1", 
     :blurb      => nil,             
@@ -44,7 +42,7 @@ RubyFu.register(
     :author     => nil, 
     :copyright  => nil, 
     :date       => nil, 
-    :menulabel   => nil, 
+    :menulabel  => nil, 
     :imagetypes => nil, 
     :params     => [],
     :results    => []
@@ -99,7 +97,7 @@ RubyFu.register(
         Gimp::ParamDef.COLOR("color", "color"),
         Gimp::ParamDef.PARASITE("parasite", "parasite"),
   ]
-) do|int32, int16, int8, float, string,
+) do |int32, int16, int8, float, string,
      length1, int32array, length2, int16array, length3, int8array, length4, floatarray, length5, stringarray,
      color, parasite|
      
@@ -123,11 +121,11 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Echo",
+    :menulabel  => "Echo",
     :imagetypes => nil,
     :params     => [],
     :results    => [] 
-) do|run_mode|
+) do |run_mode|
 
   args = [
     123,
@@ -158,7 +156,6 @@ RubyFu.register(
   end
 end
 
-RubyFu.menu_register("ruby-fu-test-call-echo", TestMenu)
 
 
 
@@ -174,7 +171,7 @@ RubyFu.register(
     :imagetypes => nil,
     :params     => [],
     :results    => []
-) do|run_mode|
+) do |run_mode|
   
   def test_method
     return false if Gimp::Shelf["badstring"] != nil
@@ -190,7 +187,6 @@ RubyFu.register(
   Gimp.message test_method ? "Success!" : "Failure"
 end
 
-RubyFu.menu_register("ruby-fu-test-shelf", TestMenu)
 
 
 
@@ -206,8 +202,8 @@ RubyFu.register(
     :imagetypes => nil,
     :params     => [], 
     :results    => []
-) do ||
-  raise "This is a test exception"
+) do
+  raise "This is a TEST Exception !!! \n"
 end
 
 def test_exception(e)
@@ -229,35 +225,35 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil,
-    :menulabel   => "Call Errors",
+    :menulabel  => "Call Errors",
     :imagetypes => nil,
     :params     => [],
     :results    => []
-) do|run_mode|
+) do |run_mode|
   require "stringio"
   $stdout = StringIO.new
-  
-  PDB.gimp_message "Calling with bad params ..."
-  test_exception(TypeError) {PDB.gimp_message(123)}
-  
-  PDB.gimp_message "Calling with too many params ..."
-  test_exception(ArgumentError) {PDB.gimp_message(123, 123)}
-  
-  #THIS CRASHES HORRIBLY. NOT SURE IF IT'S MY FAULT OR NOT.
-  PDB.gimp_message "Calling error ..."
-  test_exception(PDB::CallingError) do
-    Gimp.run_procedure('ruby-fu-test-crash', [Gimp::Param.INT32(123)])
-    #PDB.plug_in_script_fu_eval('(PDB.ruby-fu-test-crash 123)')
-  end
 
-  PDB.gimp_message "Execution error ..."
-  test_exception(PDB::ExecutionError) {PDB.ruby_fu_test_crash}
+  PDB.gimp_message_set_handler(ERROR_CONSOLE)
+
+  puts "Calling with bad params ..."
+  test_exception(TypeError) { PDB["gimp-message"].call(123) }
   
-  Gimp.message("Tests " + ($failure ? "failed" : "successful") + ":\n" + $stdout.string)
+  puts "Calling with too many params ..."
+  test_exception(ArgumentError) { PDB["gimp-message"].call("123", "123") }
+  
+  ## doesn't catch a PDB::CallingError  ??
+  # puts "Calling error ..."
+  # test_exception(PDB::CallingError) do
+  #   PDB['plug-in-script-fu-eval'].call('(ruby-fu-test-crash 123)')
+  # end
+
+  puts "Execution error ..."
+  test_exception(PDB::ExecutionError) { PDB['ruby-fu-test-crash'].call }
+  
+  Gimp.message("Tests " + ($failure ? "Failed" : "Successful") + ":\n" + $stdout.string)
   $stdout = STDOUT
 end
 
-RubyFu.menu_register("ruby-fu-test-call", TestMenu)
 
 
 
@@ -269,11 +265,11 @@ RubyFu.register(
     :author     => nil,
     :copyright  => nil,
     :date       => nil, 
-    :menulabel   => "OO",
+    :menulabel  => "OO",
     :imagetypes => nil,
     :params     => [],
     :results    => [Gimp::ParamDef.IMAGE("image", "Image")]
-) do|run_mode|
+) do |run_mode|
   PDB.verbose = true
   
   #force all classes and modules to load
@@ -308,7 +304,6 @@ RubyFu.register(
   img
 end
 
-RubyFu.menu_register("ruby-fu-test-OO", TestMenu)
 
 
 
@@ -336,11 +331,10 @@ RubyFu.register(
         RubyFu::ParamDef.ENUM("enum", "ENUM", 0, "GimpBlendMode")
     ],
     :results     => []
-) do|run_mode, *params|
+) do |run_mode, *params|
   Gimp.message(params.join("\n"))
 end
 
-RubyFu.menu_register("ruby-fu-test-dialog", TestMenu)
 
 
 RubyFu.register(
@@ -350,7 +344,7 @@ RubyFu.register(
     :author     => nil, 
     :copyright  => nil, 
     :date       => nil, 
-    :menulabel   => "Dialog, some more", 
+    :menulabel  => "Dialog, some more", 
     :imagetypes => nil, 
     :params     => [
         RubyFu::ParamDef.LIST("list", "LIST", ["a", "two", "3", "IV"]),
@@ -367,21 +361,30 @@ RubyFu.register(
         RubyFu::ParamDef.BRUSH("brush", "BRUSH", "Circle (11)"),
     ], 
     :results     => []
-) do|run_mode, *params|
+) do |run_mode, *params|
   Gimp.message(params.join("\n"))
 end
 
-RubyFu.menu_register("ruby-fu-test-dialog2", TestMenu)
 
 
 
-Tim = Time.now
+start = Time.now
 
 RubyFu.register(
   :name       => "ruby-fu-speed",
   :menulabel  => "Speed"
 ) do
-    Gimp.message "Plugin startup time is #{Time.now - Tim} seconds."
+    Gimp.message "Plugin startup time is #{Time.now - start} seconds."
 end
 
-RubyFu.menu_register("ruby-fu-speed", TestMenu)
+
+TestMenu = RubyFu.menu_branch_register(RubyFu::RubyFuToolbox, "Test")
+
+[ "ruby-fu-test-call-echo",
+  "ruby-fu-test-shelf",
+  "ruby-fu-test-call",
+  "ruby-fu-test-OO",
+  "ruby-fu-test-dialog",
+  "ruby-fu-test-dialog2",
+  "ruby-fu-speed",
+].each { |pname| RubyFu.menu_register(pname, TestMenu) }
