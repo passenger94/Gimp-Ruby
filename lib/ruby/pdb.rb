@@ -102,10 +102,7 @@ module PDB
         args.unshift(Gimp::RUN_NONINTERACTIVE)
       end
       
-      if PDB.verbose
-        arg_str = args.collect{|arg| arg.inspect}.join(', ')
-        puts "PDB call: #@name(#{arg_str})"
-      end
+      puts "PDB call: #@name(#{args.map(&:inspect).join(', ')})" if PDB.verbose
 
       retvals = convert_return_values(Gimp.run_procedure(@name, convert_args(args)))
       retvals.size == 1 ? retvals[0] : retvals
@@ -126,9 +123,7 @@ module PDB
     end
     
     def to_proc
-      lambda do |*args|
-        self.call(*args)
-      end
+      -> (*args) { self.call(*args) }
     end
   end
   
@@ -142,8 +137,8 @@ module PDB
     end
     
     def call_interactive(name, image = nil, drawable = nil)
-        ## some plug_ins doesn't work in current gimp2.9 version (05/2015)
-        ## "plug_in_gauss" doesn't but "plug_in_edge" do !?
+        ## some plug_ins don't work in current gimp2.9 version (05/2015)
+        ## "plug_in_gauss" doesn't but "plug_in_edge" does !?
       proc = Procedure.new(name)
       arg = proc.args[0]
       
@@ -170,9 +165,9 @@ module PDB
 
     def method_missing(sym, *args)
         
-      unless SKIP.include?(sym) # WTF ??
-        Procedure.new(sym.to_s.gsub('_', '-')).call(*args)
-      end
+      return if SKIP.include?(sym) # WTF ??
+
+      Procedure.new(sym.to_s.gsub('_', '-')).call(*args)
 
       rescue NoProcedure
         Gimp.message "NoProcedure !! #{$!.message}"

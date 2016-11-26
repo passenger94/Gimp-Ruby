@@ -7,7 +7,7 @@ GIMP_PLUGIN_DIR = File.dirname(__FILE__)
 
 module ShoesFu
     
-    SHOES = ''
+    # SHOES = ''
     
     def go_steppin(gui, args)
         

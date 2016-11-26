@@ -22,8 +22,8 @@
 
 #include "rbgimp.h"
 
-/*TODO a lot of these function might as well be used from the pdb.
- figure out which ones. Beware though, they are not necessarily returning the same thing*/
+/* a lot of these function might as well be used from the pdb.
+ Beware though, they are not necessarily returning the same thing */
  
 static VALUE
 rb_gimp_procedural_db_temp_name(VALUE  self)
@@ -104,30 +104,33 @@ rb_gimp_procedural_db_proc_info(VALUE  self,
 static VALUE
   rb_gimp_procedural_db_get_data(VALUE self, VALUE identifier)
 {
-  /*TODO*/
-  // gboolean success;
-  // gpointer c_data (pack/unpack bytes ?)
-  // success = gimp_procedural_db_get_data( (gchar *)StringValuePtr(identifier), 
-  //                                        &c_data )
-  // if (success)
-  //   return rb_data;
-  rb_notimplement();
-  return Qnil;
+  gboolean success;
+  gint size;
+  size = gimp_procedural_db_get_data_size((gchar *)StringValuePtr(identifier));
+  char data[size];
+
+  success = gimp_procedural_db_get_data( (gchar *)StringValuePtr(identifier), &data );
+
+  if (success)
+    return rb_marshal_load(rb_str_new2((char*)&data));
+  else
+    return Qnil;
 }
 
 static VALUE 
   rb_gimp_procedural_db_set_data(VALUE self, VALUE identifier, VALUE rb_data)
 {
-  /*TODO*/
-  // gboolean success;
-  // c_data (pack/unpack bytes ?)
-  // success = gimp_procedural_db_set_data( (gchar *)StringValuePtr(identifier), 
-  //                                        (gconstpointer)c_data,
-  //                                        (guint32)c_data_length_in_bytes )
-  // if (success)
-  //   return Qtrue;
-  rb_notimplement();
-  return Qnil;
+  gboolean success;
+  VALUE md = rb_marshal_dump(rb_data, Qnil);
+  guint32 mdsize = RSTRING_LENINT(md);
+  gconstpointer c_data = (gconstpointer)StringValuePtr(md);
+  success = gimp_procedural_db_set_data( (gchar *)StringValuePtr(identifier), 
+                                         c_data,
+                                         mdsize );
+  if (success)
+    return Qtrue;
+  else
+    return Qnil;
 }
 
 static VALUE

@@ -129,7 +129,7 @@ module RubyFu
   class Procedure
     
     def initialize(*args, &block)
-      @name, @blurb, @help, @author, @copyright, @date, menulabel, @imagetypes, @params, @results = *args
+      @name, @blurb, @help, @author, @copyright, @date, menulabel, @imagetypes, @params, @results = args
       
       @menulabel = (menulabel.empty?) ? @name : menulabel
       @menupaths = []
@@ -262,7 +262,7 @@ module RubyFu
       raise(ResultError, "Wrong number of return values. (#{nvalues} for #{nresults})") unless nvalues == nresults
       
       begin
-        values = values.zip(@results).collect do |value, result|
+        values = values.zip(@results).map do |value, result|
           value = ruby2int_filter(value)
           result.check(value)
           Gimp::Param.new(result.type, value)
@@ -320,7 +320,7 @@ module RubyFu
 
   
   def self.query
-    @@procedures.each_value { |proc| proc.query }
+    @@procedures.each_value &:query
     @@menubranches.each do |path, name|
       PDB.gimp_plugin_menu_branch_register(path, name)
     end

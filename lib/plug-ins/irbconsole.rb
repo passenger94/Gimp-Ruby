@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!ruby
 
 # GIMP-Ruby -- Allows GIMP plugins to be written in Ruby.
 # Copyright (C) 2006  Scott Lembcke

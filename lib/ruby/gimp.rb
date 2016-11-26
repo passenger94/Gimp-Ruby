@@ -41,7 +41,7 @@ end
 module Gimp
   
   def message(*messages)
-    messages.each do|message|
+    messages.each do |message|
       PDB.gimp_message(message.to_s)
     end
   end
@@ -77,7 +77,7 @@ module Gimp
     }
     
     INT2TYPE = Hash.new
-    EnumNames::PDBArgType.each do|key, value|
+    EnumNames::PDBArgType.each do |key, value|
       INT2TYPE[key] = value.gsub('PDB_', '').to_sym
     end
     

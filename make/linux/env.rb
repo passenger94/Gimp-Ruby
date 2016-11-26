@@ -5,8 +5,8 @@ require 'rbconfig'
 # manually set below to what you want to build with/for
 #ENV['DEBUG'] = "true"
 APP['GTK'] = "gtk+-2.0"
-#APP['GTK'] = "gtk+-3.0"
-ENV['GDB'] = "true" # compile -g,  don't strip symbols
+# APP['GTK'] = "gtk+-3.0" # gimp not gtk3 ready yet !!
+# ENV['GDB'] = "true" # compile -g,  don't strip symbols
 # Pick your optimatization and debugging options
 if ENV['DEBUG'] || ENV['GDB']
   LINUX_CFLAGS = "-g -O2 -Wall" #-g -O0"
